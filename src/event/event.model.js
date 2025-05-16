@@ -34,10 +34,6 @@ const eventSchema = Schema({
         type: Boolean,
         default: true
     },
-    host:{
-        type: Schema.Types.ObjectId,
-        ref:"User"
-    },
     hotel: {
         type: Schema.Types.ObjectId,
         ref: "Hotel"
