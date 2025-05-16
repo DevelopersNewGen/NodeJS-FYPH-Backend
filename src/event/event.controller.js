@@ -2,7 +2,7 @@ import Event from './event.model';
 
 export const getEvents = async (req, res) => {
     try {
-        const events = await Event.find().populate('category').populate('hosts', 'name email profilePicture');
+        const events = await Event.find().populate('category').populate('host', 'name email ');
         res.status(200).json({
             success: true,
             events: events
@@ -19,7 +19,7 @@ export const getEvents = async (req, res) => {
 export const getEventById = async (req, res) => {
     try {
         const { id } = req.params;
-        const event = await Event.findById(id).populate('category').populate('hosts', 'name email');
+        const event = await Event.findById(id).populate('category').populate('host', 'name email');
         if (!event) {
             return res.status(404).json({ 
                 success: false,
@@ -117,7 +117,7 @@ export const deleteEvent = async (req, res) => {
 export const getEventsByHost = async (req, res) => {
     try {
         const { id } = req.params;
-        const events = await Event.find({ hosts: id }).populate('category').populate('hosts', 'name email profilePicture');
+        const events = await Event.find({ host: id }).populate('category').populate('host', 'name email');
         if (!events) {
             return res.status(404).json({ 
                 success: false,
