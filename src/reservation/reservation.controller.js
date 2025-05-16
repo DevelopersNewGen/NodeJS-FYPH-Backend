@@ -105,3 +105,24 @@ export const deleteReservation = async (req, res) => {
         });
     }
 };
+
+export const getUserReservations = async (req, res) => {
+    try {
+        const { usuario } = req;
+
+        const reservations = await Reservation.find({ user: usuario._id })
+            //.populate('', '')
+            //.populate('', '');
+
+        return res.status(200).json({
+            success: true,
+            reservations,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener el historial de reservaciones',
+            error: err.message,
+        });
+    }
+};

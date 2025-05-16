@@ -4,8 +4,15 @@ import {
     getReservations,
     getReservationById,
     updateReservation,
-    deleteReservation
+    deleteReservation,
+    getUserReservations
 } from "./reservation.controller.js";
+import { 
+    getUserReservationsValidator,
+    reserveRoomValidator,
+    cancelReservationValidator,
+    updateReservationValidator
+ } from "../middlewares/reservation-validator.js";
 
 const router = Router();
 
@@ -27,7 +34,7 @@ const router = Router();
  *       500:
  *         description: Error al crear la reservación
  */
-router.post("/createReser", createReservation);
+router.post("/createReser",reserveRoomValidator, createReservation);
 
 /**
  * @swagger
@@ -93,7 +100,7 @@ router.get("/listReser/:id", getReservationById);
  *       500:
  *         description: Error al actualizar la reservación
  */
-router.put("/updateReser/:id", updateReservation);
+router.put("/updateReser/:id",updateReservationValidator, updateReservation);
 
 /**
  * @swagger
@@ -116,6 +123,20 @@ router.put("/updateReser/:id", updateReservation);
  *       500:
  *         description: Error al eliminar la reservación
  */
-router.delete("/deleteReser/:id", deleteReservation);
+router.delete("/deleteReser/:id",cancelReservationValidator, deleteReservation);
+
+/**
+ * @swagger
+ * /userReservations:
+ *   get:
+ *     summary: Obtiene el historial de reservaciones de un usuario
+ *     tags: [Reservaciones]
+ *     responses:
+ *       200:
+ *         description: Historial de reservaciones obtenido exitosamente
+ *       500:
+ *         description: Error al obtener el historial de reservaciones
+ */
+router.get("/userReser", getUserReservationsValidator, getUserReservations);
 
 export default router;
