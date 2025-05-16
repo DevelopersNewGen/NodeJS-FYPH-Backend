@@ -2,52 +2,58 @@ import Event from './event.model';
 
 export const getEvents = async (req, res) => {
     try {
-        const events = await Event.find().populate('category').populate('host', 'name email ');
+        const events = await Event.find({ status: true })
+            .populate('hotel', 'name')
+            .populate('adminEvent', 'name');
+
         res.status(200).json({
             success: true,
-            events: events
+            events
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
-            message: "error al obtener los eventos",
-            error: error.message 
+            message: "Error al obtener los eventos",
+            error: error.message
         });
     }
-}
+};
+
 
 export const getEventById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const event = await Event.findById(id).populate('category').populate('host', 'name email');
+        const { eid } = req.params;
+        const event = await Event.findById(eid)
+            .populate('hotel', 'name') 
+            .populate('adminEvent', 'name') 
+
         if (!event) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: 'Event not found' 
+                message: 'Event not found'
             });
         }
+
         res.status(200).json({
             success: true,
             event: event,
             message: 'Event found'
         });
-    }
-    catch (error) {
-        res.status(500).json({ 
+    } catch (error) {
+        res.status(500).json({
             success: false,
             message: 'Error fetching event',
-            error: error.message 
+            error: error.message
         });
     }
-}
+};
 
 export const createEvent = async (req, res) => {
     try {
         const { usuario } = req;
 
         const data = req.body;
-
-        data.host= usuario._id
+        data.host = usuario.uid;
 
         const newEvent = new Event(data);
         await newEvent.save();
@@ -58,25 +64,27 @@ export const createEvent = async (req, res) => {
             message: 'Event created successfully'
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Error creating event',
             error: error.message
         });
     }
-}
+};
 
 export const updateEvent = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { eid } = req.params;
         const data = req.body;
-        const updatedEvent = await Event.findByIdAndUpdate(id, data, { new: true });
+        const updatedEvent = await Event.findByIdAndUpdate(eid, data, { new: true });
+
         if (!updatedEvent) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: 'Event not found' 
+                message: 'Event not found'
             });
         }
+
         res.status(200).json({
             success: true,
             event: updatedEvent,
@@ -86,53 +94,60 @@ export const updateEvent = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error updating event',
-            error: error.message 
+            error: error.message
         });
     }
-}
+};
 
 export const deleteEvent = async (req, res) => {
     try {
-        const { id } = req.params;
-        const deletedEvent = await Event.findByIdAndUpdate(id, { status: false }, { new: true });
+        const { eid } = req.params;
+        const deletedEvent = await Event.findByIdAndUpdate(eid, { status: false }, { new: true });
+
         if (!deletedEvent) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                message: 'Event not found' 
+                message: 'Event not found'
             });
         }
+
         res.status(200).json({
             success: true,
             message: 'Event deleted successfully'
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Error deleting event',
-            error: error.message 
+            error: error.message
         });
     }
-}
+};
 
 export const getEventsByHost = async (req, res) => {
     try {
-        const { id } = req.params;
-        const events = await Event.find({ host: id }).populate('category').populate('host', 'name email');
-        if (!events) {
-            return res.status(404).json({ 
+        const { eid } = req.params;
+        const events = await Event.find({ host: eid, status: true })
+            .populate('hotel', 'name') 
+            .populate('adminEvent', 'name') 
+            .select('-category'); 
+
+        if (!events || events.length === 0) {
+            return res.status(404).json({
                 success: false,
-                message: 'No events found for this host' 
+                message: 'No events found for this host'
             });
         }
+
         res.status(200).json({
             success: true,
             events: events
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Error fetching events',
-            error: error.message 
+            error: error.message
         });
     }
-}
+};

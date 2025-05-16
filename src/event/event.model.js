@@ -40,12 +40,16 @@ const eventSchema = Schema({
     },
     cost : {
         type: Number
+    },
+    adminEvent:{
+        type: Schema.Types.ObjectId,
+        ref:"Usuarios"
     }
 });
 
 eventSchema.methods.toJSON = function () {
     const { _id, ...event } = this.toObject();
-    event.uid = _id;
+    event.eid = _id;
     return event;
 }
 

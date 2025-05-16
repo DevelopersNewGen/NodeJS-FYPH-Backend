@@ -41,14 +41,14 @@ router.get("/", getEvents);
 
 /**
  * @swagger
- * /FindYourHotel/v1/event/{id}:
+ * /FindYourHotel/v1/event/{eid}:
  *   get:
  *     summary: Obtener un evento por ID
  *     tags: [Event]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
+ *       - name: eid
  *         in: path
  *         description: ID del evento
  *         required: true
@@ -60,7 +60,7 @@ router.get("/", getEvents);
  *       404:
  *         description: Evento no encontrado
  */
-router.get("/:id", getEventByIdValidator, getEventById);
+router.get("/:eid", getEventByIdValidator, getEventById);
 
 /**
  * @swagger
@@ -101,14 +101,14 @@ router.post("/", createEventValidator, createEvent);
 
 /**
  * @swagger
- * /FindYourHotel/v1/event/{id}:
+ * /FindYourHotel/v1/event/{eid}:
  *   put:
  *     summary: Actualizar un evento existente
  *     tags: [Event]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
+ *       - name: eid
  *         in: path
  *         description: ID del evento a actualizar
  *         required: true
@@ -134,18 +134,18 @@ router.post("/", createEventValidator, createEvent);
  *       404:
  *         description: Evento no encontrado
  */
-router.put("/:id", updateEventValidator, updateEvent);
+router.put("/:eid", updateEventValidator, updateEvent);
 
 /**
  * @swagger
- * /FindYourHotel/v1/event/{id}:
+ * /FindYourHotel/v1/event/{eid}:
  *   delete:
  *     summary: Eliminar un evento por ID
  *     tags: [Event]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
+ *       - name: eid
  *         in: path
  *         description: ID del evento a eliminar
  *         required: true
@@ -157,18 +157,18 @@ router.put("/:id", updateEventValidator, updateEvent);
  *       404:
  *         description: Evento no encontrado
  */
-router.delete("/:id", deleteEventValidator, deleteEvent);
+router.delete("/:eid", deleteEventValidator, deleteEvent);
 
 /**
  * @swagger
- * /FindYourHotel/v1/event/host/{id}:
+ * /FindYourHotel/v1/event/host/{eid}:
  *   get:
  *     summary: Obtener eventos por ID del hotel anfitrión
  *     tags: [Event]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: id
+ *       - name: eid
  *         in: path
  *         description: ID del hotel
  *         required: true
@@ -180,6 +180,6 @@ router.delete("/:id", deleteEventValidator, deleteEvent);
  *       404:
  *         description: Hotel no encontrado o sin eventos
  */
-router.get("/host/:id", getEventsByHostValidator, getEventsByHost);
+router.get("/host/:eid", getEventsByHostValidator, getEventsByHost);
 
 export default router;
