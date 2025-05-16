@@ -21,3 +21,19 @@ export const createRoom = async (req, res) => {
         });
     }
 }
+
+export const getRooms = async (req, res) => {
+    try {
+        const rooms = await Room.find();
+        return res.status(200).json({
+            success: true,
+            rooms
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error fetching rooms',
+            error: error.message
+        });
+    }
+}

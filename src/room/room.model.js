@@ -53,4 +53,10 @@ const roomSchema = Schema({
     ]
 });
 
+roomSchema.methods.toJSON = function () {
+    const { _id, ...room } = this.toObject()
+    room.rid = _id
+    return room
+}
+
 export default model("Room", roomSchema);
