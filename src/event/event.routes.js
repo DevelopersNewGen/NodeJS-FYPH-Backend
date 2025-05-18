@@ -9,11 +9,7 @@ import {
 } from "./event.controller.js";
 
 import {
-    createEventValidator,
-    updateEventValidator,
-    deleteEventValidator,
-    getEventByIdValidator,
-    getEventsByHostValidator
+    createEventValidator, generalValidator, deleteEventValidator, validateSearchByHost,
 } from "../middlewares/event-validator.js";
 
 const router = Router();
@@ -60,7 +56,7 @@ router.get("/", getEvents);
  *       404:
  *         description: Evento no encontrado
  */
-router.get("/:eid", getEventByIdValidator, getEventById);
+router.get("/:eid", generalValidator, getEventById);
 
 /**
  * @swagger
@@ -97,7 +93,7 @@ router.get("/:eid", getEventByIdValidator, getEventById);
  *       400:
  *         description: Error de validación
  */
-router.post("/", createEventValidator, createEvent);
+router.post("/createEvent", createEventValidator, createEvent);
 
 /**
  * @swagger
@@ -134,7 +130,7 @@ router.post("/", createEventValidator, createEvent);
  *       404:
  *         description: Evento no encontrado
  */
-router.put("/:eid", updateEventValidator, updateEvent);
+router.put("/editEvent/:eid",generalValidator, updateEvent);
 
 /**
  * @swagger
@@ -157,7 +153,7 @@ router.put("/:eid", updateEventValidator, updateEvent);
  *       404:
  *         description: Evento no encontrado
  */
-router.delete("/:eid", deleteEventValidator, deleteEvent);
+router.delete("/deleteEvent/:eid", deleteEventValidator, deleteEvent);
 
 /**
  * @swagger
@@ -180,6 +176,6 @@ router.delete("/:eid", deleteEventValidator, deleteEvent);
  *       404:
  *         description: Hotel no encontrado o sin eventos
  */
-router.get("/host/:eid", getEventsByHostValidator, getEventsByHost);
+router.get("/searchByHost/:eid", validateSearchByHost, getEventsByHost);
 
 export default router;

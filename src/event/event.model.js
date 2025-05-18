@@ -43,7 +43,7 @@ const eventSchema = Schema({
     },
     adminEvent:{
         type: Schema.Types.ObjectId,
-        ref:"Usuarios"
+        ref:"User"
     }
 });
 
