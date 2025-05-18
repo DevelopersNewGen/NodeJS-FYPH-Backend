@@ -1,14 +1,12 @@
 import { Router } from "express";
 import {
     createReservation,
-    getReservations,
     getReservationById,
     updateReservation,
     deleteReservation,
     getUserReservations
 } from "./reservation.controller.js";
 import { 
-    getUserReservationsValidator,
     reserveRoomValidator,
     cancelReservationValidator,
     updateReservationValidator
@@ -35,20 +33,6 @@ const router = Router();
  *         description: Error al crear la reservación
  */
 router.post("/createReser",reserveRoomValidator, createReservation);
-
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Lista todas las reservaciones activas
- *     tags: [Reservaciones]
- *     responses:
- *       200:
- *         description: Lista de reservaciones
- *       500:
- *         description: Error al obtener las reservaciones
- */
-router.get("/", getReservations);
 
 /**
  * @swagger
@@ -124,19 +108,5 @@ router.put("/updateReser/:id",updateReservationValidator, updateReservation);
  *         description: Error al eliminar la reservación
  */
 router.delete("/deleteReser/:id",cancelReservationValidator, deleteReservation);
-
-/**
- * @swagger
- * /userReservations:
- *   get:
- *     summary: Obtiene el historial de reservaciones de un usuario
- *     tags: [Reservaciones]
- *     responses:
- *       200:
- *         description: Historial de reservaciones obtenido exitosamente
- *       500:
- *         description: Error al obtener el historial de reservaciones
- */
-router.get("/userReser", getUserReservationsValidator, getUserReservations);
 
 export default router;

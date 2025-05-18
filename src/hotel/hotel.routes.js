@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures } from "../hotel/hotel.controller.js";
-import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator } from "../middlewares/hotel-validator.js";
+import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel} from "../hotel/hotel.controller.js";
+import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator } from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -193,5 +193,30 @@ router.patch("/updatePictures/:hid", uploadHotelImage.array("pictures", 5), clou
  *         description: Hotel no encontrado
  */
 router.delete("/deleteHotel/:hid", deleteHotelValidator, deleteHotel);
+
+/**
+ * @swagger
+ * /hotels/getReservations/{hid}:
+ *   get:
+ *     summary: Obtener todas las reservaciones de un hotel por ID
+ *     tags: [Hotel]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: hid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hotel
+ *     responses:
+ *       200:
+ *         description: Lista de reservaciones del hotel
+ *       404:
+ *         description: Hotel no encontrado
+ *       401:
+ *         description: No autorizado o token inválido
+ */
+router.get("/getReservations/:hid", getReservationsByHotelValidator, getReservationsByHotel);
 
 export default router;

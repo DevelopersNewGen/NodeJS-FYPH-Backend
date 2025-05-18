@@ -54,6 +54,7 @@ export const getHotels = async (req, res) =>{
             Hotel.countDocuments(query),
             Hotel.find(query)
             .populate("host", "name email")
+            .populate("reservations", "room")
             .skip(Number(from))
             .limit(Number(limit))
         ])
@@ -66,6 +67,56 @@ export const getHotels = async (req, res) =>{
     }catch (error) {
         return res.status(500).json({
             msg: "Error al obtener los hoteles",
+            error: error.message
+        })
+    }
+}
+
+export const getReservationsByHotel = async (req, res) => {
+    try {
+        const { hid } = req.params
+        const hotel = await Hotel.findById(hid)
+        .populate("reservations", "room")
+
+        if(!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            reservations: hotel.reservations
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: "Error al obtener las reservaciones",
+            error: error.message
+        })
+    }
+}
+
+export const getRoomsByHotel = async (req, res) => {
+    try {
+        const { hid } = req.params
+        const hotel = await Hotel.findById(hid)
+        .populate("rooms", "name price status")
+
+        if(!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            rooms: hotel.rooms
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: "Error al obtener las habitaciones",
             error: error.message
         })
     }

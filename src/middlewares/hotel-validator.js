@@ -79,3 +79,10 @@ export const deleteHotelValidator = [
     validateField,
     handleErrors
 ] 
+
+export const getReservationsByHotelValidator = [
+    validateJWT,
+    param("hid").isMongoId().withMessage("Invalid hotel ID"),
+    validateField,
+    handleErrors
+]

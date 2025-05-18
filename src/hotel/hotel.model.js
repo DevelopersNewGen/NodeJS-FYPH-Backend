@@ -32,39 +32,43 @@ const hotelSchema = Schema({
         maxLength: [8, "Telephone cannot exceed 8 characters"]
     },
     services: {
-    type: [
-        {
-            type: {
-                type: String,
-                required: [true, "Service is required"],
-                enum: [
-                    "Hotel",
-                    "Singleroom",
-                    "Doubleroom",
-                    "Suite",
-                    "Deluxeroom",
-                    "Event"
-                ]
-            },
-            price: {
-                type: Number,
-                required: [true, "Price is required"],
-                min: [0, "Price cannot be negative"]
+        type: [
+            {
+                type: {
+                    type: String,
+                    required: [true, "Service is required"],
+                    enum: [
+                        "Hotel",
+                        "Singleroom",
+                        "Doubleroom",
+                        "Suite",
+                        "Deluxeroom",
+                        "Event"
+                    ]
+                },
+                price: {
+                    type: Number,
+                    required: [true, "Price is required"],
+                    min: [0, "Price cannot be negative"]
+                }
             }
+        ],
+        validate: {
+            validator: function (arr) {
+                return arr.length > 0;
+            },
+            message: "At least one service must be specified"
         }
-    ],
-    validate: {
-        validator: function (arr) {
-            return arr.length > 0;
-        },
-        message: "At least one service must be specified"
-    }
-}
-,
+    },
     host: {
             type: Schema.Types.ObjectId,
-            ref: "User"    
+            ref: "User",
+            required: [true, "Host is required"], 
     },
+    reservations: [{
+        type: Schema.Types.ObjectId,
+        ref: "Reservation"
+    }],
     ratings: [{
         user: {
             type: Schema.Types.ObjectId,
