@@ -40,11 +40,11 @@ const roomSchema = Schema({
             message: "Must include at least one image"
         }
     },
-    /*hotel: {
+    hotel: {
         type: Schema.Types.ObjectId,
         ref: 'Hotel',
         required: [true, "Hotel is required"]
-    },*/
+    },
     reservations: [
         {
             type: Schema.Types.ObjectId,
