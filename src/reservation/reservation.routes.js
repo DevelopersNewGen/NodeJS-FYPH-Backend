@@ -13,10 +13,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Reservations
+ *   description: API for managing reservations
+ */
+
+/**
+ * @swagger
  * /createReser:
  *   post:
  *     summary: Crea una nueva reservación
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     requestBody:
  *       required: true
  *       content:
@@ -36,7 +43,7 @@ router.post("/createReser",reserveRoomValidator, createReservation);
  * /listReser/{rid}:
  *   get:
  *     summary: Obtiene una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
  *         name: id
@@ -60,7 +67,7 @@ router.get("/listReser/:rid", getReservationById);
  * /deleteReser/:{rid}:
  *   delete:
  *     summary: Elimina (soft delete) una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
  *         name: rid

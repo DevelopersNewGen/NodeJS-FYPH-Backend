@@ -9,7 +9,7 @@ const router = Router();
  * @swagger
  * tags:
  *   - name: Rooms
- *     description: API para gestionar habitaciones
+ *     description: API for managing rooms
  */
 
 /**
