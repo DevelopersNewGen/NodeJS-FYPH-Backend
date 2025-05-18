@@ -2,13 +2,11 @@ import { Router } from "express";
 import {
     createReservation,
     getReservationById,
-    updateReservation,
     deleteReservation,
 } from "./reservation.controller.js";
 import { 
     reserveRoomValidator,
     cancelReservationValidator,
-    updateReservationValidator
  } from "../middlewares/reservation-validator.js";
 
 const router = Router();
@@ -35,7 +33,7 @@ router.post("/createReser",reserveRoomValidator, createReservation);
 
 /**
  * @swagger
- * /listReser/{id}:
+ * /listReser/{rid}:
  *   get:
  *     summary: Obtiene una reservación por ID
  *     tags: [Reservaciones]
@@ -54,46 +52,18 @@ router.post("/createReser",reserveRoomValidator, createReservation);
  *       500:
  *         description: Error al obtener la reservación
  */
-router.get("/listReser/:id", getReservationById);
+router.get("/listReser/:rid", getReservationById);
+
 
 /**
  * @swagger
- * /updateReser/:{id}:
- *   put:
- *     summary: Edita una reservación por ID
- *     tags: [Reservaciones]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la reservación
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *     responses:
- *       200:
- *         description: Reservación actualizada
- *       404:
- *         description: Reservación no encontrada
- *       500:
- *         description: Error al actualizar la reservación
- */
-router.put("/updateReser/:id",updateReservationValidator, updateReservation);
-
-/**
- * @swagger
- * /deleteReser/:{id}:
+ * /deleteReser/:{rid}:
  *   delete:
  *     summary: Elimina (soft delete) una reservación por ID
  *     tags: [Reservaciones]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: rid
  *         required: true
  *         schema:
  *           type: string
@@ -106,6 +76,6 @@ router.put("/updateReser/:id",updateReservationValidator, updateReservation);
  *       500:
  *         description: Error al eliminar la reservación
  */
-router.delete("/deleteReser/:id",cancelReservationValidator, deleteReservation);
+router.delete("/deleteReser/:rid",cancelReservationValidator, deleteReservation);
 
 export default router;
