@@ -51,7 +51,6 @@ export const getEventById = async (req, res) => {
 export const createEvent = async (req, res) => {
     try {
         const { usuario } = req;
-        console.log(usuario);
         const data = req.body;
         data.adminEvent = usuario._id;
 
