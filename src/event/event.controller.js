@@ -1,10 +1,10 @@
-import Event from './event.model';
+import Event from './event.model.js';
 
 export const getEvents = async (req, res) => {
     try {
         const events = await Event.find({ status: true })
-            .populate('hotel', 'name')
-            .populate('adminEvent', 'name');
+            .populate('hotel', '.name')
+              .populate({path: "adminEvent",select: "name -_id"});
 
         res.status(200).json({
             success: true,
@@ -51,9 +51,9 @@ export const getEventById = async (req, res) => {
 export const createEvent = async (req, res) => {
     try {
         const { usuario } = req;
-
+        console.log(usuario);
         const data = req.body;
-        data.host = usuario.uid;
+        data.adminEvent = usuario._id;
 
         const newEvent = new Event(data);
         await newEvent.save();
@@ -127,7 +127,7 @@ export const deleteEvent = async (req, res) => {
 export const getEventsByHost = async (req, res) => {
     try {
         const { eid } = req.params;
-        const events = await Event.find({ host: eid, status: true })
+        const events = await Event.find({ adminEvent: eid, status: true })
             .populate('hotel', 'name') 
             .populate('adminEvent', 'name') 
             .select('-category'); 
