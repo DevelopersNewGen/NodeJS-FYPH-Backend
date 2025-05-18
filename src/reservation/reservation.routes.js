@@ -4,7 +4,6 @@ import {
     getReservationById,
     updateReservation,
     deleteReservation,
-    getUserReservations
 } from "./reservation.controller.js";
 import { 
     reserveRoomValidator,
