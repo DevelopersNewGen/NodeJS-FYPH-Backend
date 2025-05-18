@@ -3,9 +3,9 @@ import Room from './room.model.js';
 export const createRoom = async (req, res) => {
 
     try {
-        const { numRoom, description, capacity, pricePerDay, type} = req.body;
+        const { numRoom, description, capacity, pricePerDay, type, hotel} = req.body;
          const images = req.imgs;
-        const newRoom = new Room({ numRoom, description, capacity, pricePerDay, type, images});
+        const newRoom = new Room({ numRoom, description, capacity, pricePerDay, type, images, hotel});
         await newRoom.save();
         return res.status(201).json({
             success: true,

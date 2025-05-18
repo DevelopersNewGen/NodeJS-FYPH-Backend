@@ -5,7 +5,7 @@ const reservationSchema = Schema({
         type: Date,
         required: true
     },
-    extiDate: {
+    exitDate: {
         type: Date,
         required: true 
     },
