@@ -25,7 +25,8 @@ const options ={
         "./src/hotel/hotel.routes.js",
         "./src/room/room.routes.js",
         "./src/event/event.routes.js",
-        "./src/reservation/reservation.routes.js"
+        "./src/reservation/reservation.routes.js",
+        "./src/bill/bill.routes.js"
     ]
 }
 
