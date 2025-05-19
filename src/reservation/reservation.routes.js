@@ -64,7 +64,7 @@ router.get("/listReser/:rid", getReservationById);
 
 /**
  * @swagger
- * /deleteReser/:{rid}:
+ * /deleteReser/{rid}:
  *   delete:
  *     summary: Elimina (soft delete) una reservación por ID
  *     tags: [Reservations]

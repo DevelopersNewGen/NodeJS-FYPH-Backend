@@ -6,6 +6,8 @@ import { hasRoles } from "./validate-roles.js"
 import { deleteFileOnError } from "./delete-file-on-error.js" 
 import { userExists, isClient } from "../helpers/db-validator.js" 
 
+export const validServices = ["Hotel", "Singleroom", "Doubleroom", "Suite", "Deluxeroom", "Event"]
+
 export const createHotelValidator = [
     validateJWT,
     hasRoles("ADMIN_ROLE"),
@@ -19,7 +21,8 @@ export const createHotelValidator = [
                     .isLength({ max: 8 }).withMessage("Telephone must be at most 8 characters"),
     body("services").isArray({ min: 1 }).withMessage("At least one service must be specified"),
     body("services.*.type").notEmpty().withMessage("Service type is required")
-                            .isIn(["Hotel", "Singleroom", "Doubleroom", "Suite", "Deluxeroom", "Event"]).withMessage("Invalid service type"),
+                        .isIn(validServices).withMessage(`Invalid service type. Valid types are: ${validServices.join(", ")}`),
+    body("services.*.description").notEmpty().withMessage("Service description is required"),
     body("services.*.price").notEmpty().withMessage("Service price is required")
                             .isFloat({ min: 0 }).withMessage("Service price must be a positive number"),
     body("host").notEmpty().withMessage("Host is required")
@@ -54,7 +57,9 @@ export const updateHotelValidator = [
     body("address").optional().isLength({ max: 100 }).withMessage("Address must be at most 100 characters"),
     body("telephone").optional().isLength({ max: 8 }).withMessage("Telephone must be at most 8 characters"),
     body("services").optional().isArray({ min: 1 }).withMessage("At least one service must be specified"),
-    body("services.*.type").optional().isIn(["Hotel", "Singleroom", "Doubleroom", "Suite", "Deluxeroom", "Event"]).withMessage("Invalid service type"),
+    body("services.*.type").optional().notEmpty().withMessage("Service type is required")
+                        .isIn(validServices).withMessage(`Invalid service type. Valid types are: ${validServices.join(", ")}`),
+    body("services.*.description").optional().notEmpty().withMessage("Service description is required"),
     body("services.*.price").optional().isFloat({ min: 0 }).withMessage("Service price must be a positive number"),
     body("host").optional().isMongoId().withMessage("Invalid host ID")
                 .custom(userExists)
@@ -83,6 +88,16 @@ export const deleteHotelValidator = [
 export const getReservationsByHotelValidator = [
     validateJWT,
     param("hid").isMongoId().withMessage("Invalid hotel ID"),
+    validateField,
+    handleErrors
+]
+
+export const addCommentValidator = [
+    validateJWT,
+    hasRoles("CLIENT_ROLE"),
+    param("hid").isMongoId().withMessage("Invalid hotel ID"),
+    body("comment").notEmpty().withMessage("Comment is required")
+                    .isLength({ max: 500 }).withMessage("Comment must be at most 500 characters"),
     validateField,
     handleErrors
 ]

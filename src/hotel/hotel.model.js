@@ -46,6 +46,11 @@ const hotelSchema = Schema({
                         "Event"
                     ]
                 },
+                description: {
+                    type: String,
+                    required: [true, "Description is required"],
+                    maxLength: [100, "Description cannot exceed 100 characters"]
+                },
                 price: {
                     type: Number,
                     required: [true, "Price is required"],

@@ -250,3 +250,51 @@ export const deleteHotel = async (req, res) => {
     }
 }
 
+export const addComment = async (req, res) => {
+    try {
+        const { hid } = req.params;
+        const { rating, comment } = req.body;
+        const { usuario } = req;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                msg: "El rating debe ser un número entre 1 y 5"
+            });
+        }
+
+        const hotel = await Hotel.findById(hid);
+
+        if (!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            });
+        }
+
+        const today = new Date();
+        const onlyDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        hotel.ratings.push({
+            user: usuario.uid,
+            rating,
+            comment,
+            date: onlyDate
+        });
+
+        await hotel.save();
+
+        return res.status(200).json({
+            success: true,
+            msg: "Comentario y calificación agregados correctamente",
+            hotel
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            msg: "Error al agregar el comentario",
+            error: error.message
+        });
+    }
+}
+
