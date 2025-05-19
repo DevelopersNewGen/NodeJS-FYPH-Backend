@@ -48,7 +48,6 @@ export const listHotelReservations = async (req, res) => {
       return res.status(404).json({ success: false, message: "Hotel no encontrado" });
     }
 
-    // 2) Obtenemos todas las habitaciones de ese hotel (solo ids, número y tipo)
     const rooms = await Room.find({ hotel: hid })
       .select("_id numRoom type");
 
@@ -58,13 +57,10 @@ export const listHotelReservations = async (req, res) => {
       return res.json({ success: true, reservations: [] });
     }
 
-    // 3) Consultamos las reservaciones que apunten a esas habitaciones
     const reservations = await Reservation.find({ room: { $in: roomIds } })
       .select("startDate exitDate user room")
       .populate({ path: "user", select: "name" })
       .lean();
-
-    // 4) Construimos el resultado uniendo información de hotel, habitación y usuario
     const lookupRoom = rooms.reduce((acc, r) => {
       acc[r._id.toString()] = { numRoom: r.numRoom, type: r.type };
       return acc;
