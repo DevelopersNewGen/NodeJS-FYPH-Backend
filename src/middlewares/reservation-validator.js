@@ -24,19 +24,8 @@ export const getUserReservationsValidator = [
 export const cancelReservationValidator = [
     validateJWT,
     hasRoles('CLIENT_ROLE'),
-    param('id').notEmpty().withMessage('Reservation ID es requerido').isMongoId(),
-    param('id').custom(reservationExists),
-    validateField,
-    handleErrors,
-];
-
-export const updateReservationValidator = [
-    validateJWT,
-    hasRoles('CLIENT_ROLE'),
-    param('id').notEmpty().withMessage('Reservation ID es requerido').isMongoId(),
-    param('id').custom(reservationExists),
-    body('startDate').optional().isISO8601().withMessage('Start date debe ser una fecha válida'),
-    body('exitDate').optional().isISO8601().withMessage('End date debe ser una fecha válida'),
+    param('uid').notEmpty().withMessage('Reservation ID es requerido').isMongoId(),
+    param('uid').custom(reservationExists),
     validateField,
     handleErrors,
 ];

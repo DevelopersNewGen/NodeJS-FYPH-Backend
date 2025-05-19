@@ -4,25 +4,28 @@ import Hotel from "../hotel/hotel.model.js";
 
 export const createReservation = async (req, res) => {
     try {
-        const data = req.body;
+        const { rid } = req.params; 
+        const {usuario} = req;
+        const { startDate, extiDate, ...otherData } = req.body;
 
-        const room = await Room.findById(data.room);
+        const room = await Room.findById(rid);
         if (!room) {
             return res.status(404).json({
                 success: false,
                 message: "Habitación no encontrada"
             });
         }
-        if (!room.status) {
-            return res.status(400).json({
-                success: false,
-                message: "La habitación no está disponible"
-            });
-        }
 
-        const reservation = await Reservation.create(data);
+        const reservationData = {
+            startDate,
+            extiDate,
+            user: usuario.uid,
+            room: room.rid,
+            ...otherData
+        };
+        const reservation = await Reservation.create(reservationData);
 
-        room.status = false;
+        room.reservations.push(reservation.rid);
         await room.save();
 
         if (room.hotel) {
@@ -69,67 +72,6 @@ export const getReservationById = async (req, res) => {
     }
 };
 
-export const updateReservation = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { room: newRoomId, ...data } = req.body;
-
-        const reservation = await Reservation.findById(id);
-        if (!reservation) {
-            return res.status(404).json({
-                success: false,
-                message: "Reservación no encontrada"
-            });
-        }
-
-        if (newRoomId && String(newRoomId) !== String(reservation.room)) {
-
-            const newRoom = await Room.findById(newRoomId);
-            if (!newRoom) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Nueva habitación no encontrada"
-                });
-            }
-            if (!newRoom.status) {
-                return res.status(400).json({
-                    success: false,
-                    message: "La nueva habitación no está disponible"
-                });
-            }
-
-            const oldRoom = await Room.findById(reservation.room);
-            if (oldRoom) {
-                oldRoom.status = true;
-                await oldRoom.save();
-            }
-
-            newRoom.status = false;
-            await newRoom.save();
-
-            data.room = newRoomId;
-        }
-
-        const updated = await Reservation.findByIdAndUpdate(id, data, { new: true });
-        if (!updated) {
-            return res.status(404).json({
-                success: false,
-                message: "Reservación no encontrada"
-            });
-        }
-        res.status(200).json({
-            success: true,
-            message: "Reservación actualizada",
-            reservation: updated
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Error al actualizar la reservación",
-            error: err.message
-        });
-    }
-};
 
 export const deleteReservation = async (req, res) => {
     try {
@@ -144,11 +86,10 @@ export const deleteReservation = async (req, res) => {
         }
 
         if (reservation.room) {
-            const room = await Room.findById(reservation.room);
-            if (room) {
-                room.status = true;
-                await room.save();
-            }
+            await Room.findByIdAndUpdate(
+                reservation.room,
+                { $pull: { reservations: reservation._id } }
+            );
         }
 
         if (reservation.room) {

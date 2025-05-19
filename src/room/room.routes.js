@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createRoom, getRooms, getRoomById, updateRoom, updateRoomImages} from "./room.controller.js";
-import { validateCrateRoom, validateGetRoomById, validateUpdateRoom} from "../middlewares/room-validator.js";
+import { createRoom, getRooms, getRoomById, updateRoom, updateRoomImages, filterRooms} from "./room.controller.js";
+import { validateCrateRoom, validateGetRoomById, validateUpdateRoom, filterRoomsValidator} from "../middlewares/room-validator.js";
 import { uploadRoomImage } from "../middlewares/multer-uploads.js";
 import {  cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -9,7 +9,7 @@ const router = Router();
  * @swagger
  * tags:
  *   - name: Rooms
- *     description: API para gestionar habitaciones
+ *     description: API for managing rooms
  */
 
 /**
@@ -173,5 +173,49 @@ router.patch(
   validateUpdateRoom,
   updateRoomImages
 );
+
+/**
+ * @swagger
+ * /filterRooms:
+ *   get:
+ *     summary: Filtrar habitaciones por parámetros y disponibilidad de fechas
+ *     tags:
+ *       - Rooms
+ *     parameters:
+ *       - in: query
+ *         name: capacity
+ *         schema:
+ *           type: string
+ *         description: Capacidad de la habitación
+ *       - in: query
+ *         name: pricePerDay
+ *         schema:
+ *           type: number
+ *         description: Precio máximo por día
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [SINGLE, DOUBLE, SUITE, DELUXE]
+ *         description: Tipo de habitación
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha de entrada (YYYY-MM-DD)
+ *       - in: query
+ *         name: extiDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha de salida (YYYY-MM-DD)
+ *     responses:
+ *       200:
+ *         description: Lista de habitaciones filtradas y disponibles
+ *       400:
+ *         description: Parámetros inválidos
+ */
+router.get("/filterRooms", filterRoomsValidator, filterRooms);
 
 export default router;

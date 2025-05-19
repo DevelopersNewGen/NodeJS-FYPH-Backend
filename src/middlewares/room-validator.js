@@ -33,3 +33,8 @@ export const validateUpdateRoom = [
     deleteFileOnError,
     handleErrors
 ]
+
+export const filterRoomsValidator = [
+    validateField,
+    handleErrors
+]
