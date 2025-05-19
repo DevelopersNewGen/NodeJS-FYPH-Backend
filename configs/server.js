@@ -14,6 +14,7 @@ import hotelRoutes from "../src/hotel/hotel.routes.js";
 import roomRoutes from "../src/room/room.routes.js";
 import eventRoutes from "../src/event/event.routes.js";
 import createDefaultAdmin from "./default-data.js";
+import reportRoutes from "../src/report/report.routes.js";
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false }));
@@ -32,6 +33,7 @@ const routes = (app) => {
     app.use("/FYPH/v1/hotels", hotelRoutes);
     app.use("/FYPH/v1/rooms", roomRoutes);
     app.use("/FYPH/v1/events", eventRoutes);
+    app.use("/FYPH/v1/reports", reportRoutes);
 }
 
 const conectarDB = async () => {
