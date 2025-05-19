@@ -12,12 +12,13 @@ export const register = async (req, res) => {
         data.profilePicture = Img
 
         const user = await User.create(data);
-
+        console.log(user)
         return res.status(201).json({
             message: "You have successfully registered",
             success: true,
             name: user.name,
-            email: user.email
+            email: user.email,
+            id: user._id
         });
     } catch (err) {
         return res.status(500).json({
