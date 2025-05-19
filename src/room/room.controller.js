@@ -3,11 +3,10 @@ import Room from './room.model.js';
 export const createRoom = async (req, res) => {
 
     try {
-        const { name, description, capacity, pricePerDay, type} = req.body;
+        const { numRoom, description, capacity, pricePerDay, type, hotel} = req.body;
          const images = req.imgs;
-        const newRoom = new Room({ name, description, capacity, pricePerDay, type, images});
+        const newRoom = new Room({ numRoom, description, capacity, pricePerDay, type, images, hotel});
         await newRoom.save();
-        console.log("hola");
         return res.status(201).json({
             success: true,
             message: 'Room created successfully',
@@ -118,6 +117,52 @@ export const updateRoomImages = async (req, res) => {
       success: false,
       message: "Error al actualizar imágenes de la habitación",
       error: err.message
+    });
+  }
+};
+
+
+export const filterRooms = async (req, res) => {
+  try {
+    const { capacity, pricePerDay, type, startDate, extiDate } = req.query;
+
+    let filter = {};
+    if (capacity) filter.capacity = capacity;
+    if (pricePerDay) filter.pricePerDay = { $lte: Number(pricePerDay) };
+    if (type) filter.type = type;
+
+    let rooms = await Room.find(filter);
+
+    if (startDate && extiDate) {
+      const start = new Date(startDate);
+      const end = new Date(extiDate);
+      
+      const availableRooms = [];
+      for (const room of rooms) {
+        const reservations = await Room.populate(room, { path: 'reservations' });
+        const hasOverlap = reservations.reservations.some(r =>
+          r.status &&
+          (
+            (new Date(r.startDate) < end) &&
+            (new Date(r.extiDate) > start)
+          )
+        );
+        if (!hasOverlap) {
+          availableRooms.push(room);
+        }
+      }
+      rooms = availableRooms;
+    }
+
+    return res.status(200).json({
+      success: true,
+      rooms
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error filtrando habitaciones',
+      error: error.message
     });
   }
 };

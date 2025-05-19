@@ -1,27 +1,29 @@
 import { Router } from "express";
 import {
     createReservation,
-    getReservations,
     getReservationById,
-    updateReservation,
     deleteReservation,
-    getUserReservations
 } from "./reservation.controller.js";
 import { 
-    getUserReservationsValidator,
     reserveRoomValidator,
     cancelReservationValidator,
-    updateReservationValidator
  } from "../middlewares/reservation-validator.js";
 
 const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Reservations
+ *   description: API for managing reservations
+ */
+
+/**
+ * @swagger
  * /createReser:
  *   post:
  *     summary: Crea una nueva reservación
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     requestBody:
  *       required: true
  *       content:
@@ -38,24 +40,10 @@ router.post("/createReser",reserveRoomValidator, createReservation);
 
 /**
  * @swagger
- * /:
- *   get:
- *     summary: Lista todas las reservaciones activas
- *     tags: [Reservaciones]
- *     responses:
- *       200:
- *         description: Lista de reservaciones
- *       500:
- *         description: Error al obtener las reservaciones
- */
-router.get("/", getReservations);
-
-/**
- * @swagger
- * /listReser/{id}:
+ * /listReser/{rid}:
  *   get:
  *     summary: Obtiene una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
  *         name: id
@@ -71,46 +59,18 @@ router.get("/", getReservations);
  *       500:
  *         description: Error al obtener la reservación
  */
-router.get("/listReser/:id", getReservationById);
+router.get("/listReser/:rid", getReservationById);
+
 
 /**
  * @swagger
- * /updateReser/:{id}:
- *   put:
- *     summary: Edita una reservación por ID
- *     tags: [Reservaciones]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la reservación
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *     responses:
- *       200:
- *         description: Reservación actualizada
- *       404:
- *         description: Reservación no encontrada
- *       500:
- *         description: Error al actualizar la reservación
- */
-router.put("/updateReser/:id",updateReservationValidator, updateReservation);
-
-/**
- * @swagger
- * /deleteReser/:{id}:
+ * /deleteReser/{rid}:
  *   delete:
  *     summary: Elimina (soft delete) una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: rid
  *         required: true
  *         schema:
  *           type: string
@@ -123,20 +83,6 @@ router.put("/updateReser/:id",updateReservationValidator, updateReservation);
  *       500:
  *         description: Error al eliminar la reservación
  */
-router.delete("/deleteReser/:id",cancelReservationValidator, deleteReservation);
-
-/**
- * @swagger
- * /userReservations:
- *   get:
- *     summary: Obtiene el historial de reservaciones de un usuario
- *     tags: [Reservaciones]
- *     responses:
- *       200:
- *         description: Historial de reservaciones obtenido exitosamente
- *       500:
- *         description: Error al obtener el historial de reservaciones
- */
-router.get("/userReser", getUserReservationsValidator, getUserReservations);
+router.delete("/deleteReser/:rid",cancelReservationValidator, deleteReservation);
 
 export default router;

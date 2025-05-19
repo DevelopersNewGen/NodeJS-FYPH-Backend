@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures } from "../hotel/hotel.controller.js";
-import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator } from "../middlewares/hotel-validator.js";
+import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment} from "../hotel/hotel.controller.js";
+import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator } from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -35,6 +35,24 @@ const router = Router();
  *             properties:
  *               name:
  *                 type: string
+ *               description:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               telephone:
+ *                 type: string
+ *               services:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       enum: [Hotel, Singleroom, Doubleroom, Suite, Deluxeroom, Event]
+ *                     description:
+ *                       type: string
+ *                     price:
+ *                       type: number
  *               host:
  *                 type: string
  *               pictures:
@@ -122,6 +140,24 @@ router.get("/findHotel/:hid", getHotelByIdValidator, getHotelById);
  *             properties:
  *               name:
  *                 type: string
+ *               description:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               telephone:
+ *                 type: string
+ *               services:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       enum: [Hotel, Singleroom, Doubleroom, Suite, Deluxeroom, Event]
+ *                     description:
+ *                       type: string
+ *                     price:
+ *                       type: number
  *               host:
  *                 type: string
  *               pictures:
@@ -193,5 +229,70 @@ router.patch("/updatePictures/:hid", uploadHotelImage.array("pictures", 5), clou
  *         description: Hotel no encontrado
  */
 router.delete("/deleteHotel/:hid", deleteHotelValidator, deleteHotel);
+
+/**
+ * @swagger
+ * /hotels/getReservations/{hid}:
+ *   get:
+ *     summary: Obtener todas las reservaciones de un hotel por ID
+ *     tags: [Hotel]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: hid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hotel
+ *     responses:
+ *       200:
+ *         description: Lista de reservaciones del hotel
+ *       404:
+ *         description: Hotel no encontrado
+ *       401:
+ *         description: No autorizado o token inválido
+ */
+router.get("/getReservations/:hid", getReservationsByHotelValidator, getReservationsByHotel);
+
+/**
+ * @swagger
+ * /hotels/addComment/{hid}:
+ *   patch:
+ *     summary: Agregar comentario y calificación a un hotel
+ *     tags: [Hotel]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: hid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hotel
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 description: Calificación (1 a 5 estrellas)
+ *               comment:
+ *                 type: string
+ *                 description: Comentario del usuario
+ *     responses:
+ *       200:
+ *         description: Comentario y calificación agregados correctamente
+ *       400:
+ *         description: Error de validación o datos incorrectos
+ *       404:
+ *         description: Hotel no encontrado
+ */
+router.patch("/addComment/:hid", addCommentValidator, addComment);
 
 export default router;

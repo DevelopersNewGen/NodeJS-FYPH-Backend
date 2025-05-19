@@ -54,6 +54,7 @@ export const getHotels = async (req, res) =>{
             Hotel.countDocuments(query),
             Hotel.find(query)
             .populate("host", "name email")
+            .populate("reservations", "room")
             .skip(Number(from))
             .limit(Number(limit))
         ])
@@ -66,6 +67,56 @@ export const getHotels = async (req, res) =>{
     }catch (error) {
         return res.status(500).json({
             msg: "Error al obtener los hoteles",
+            error: error.message
+        })
+    }
+}
+
+export const getReservationsByHotel = async (req, res) => {
+    try {
+        const { hid } = req.params
+        const hotel = await Hotel.findById(hid)
+        .populate("reservations", "room")
+
+        if(!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            reservations: hotel.reservations
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: "Error al obtener las reservaciones",
+            error: error.message
+        })
+    }
+}
+
+export const getRoomsByHotel = async (req, res) => {
+    try {
+        const { hid } = req.params
+        const hotel = await Hotel.findById(hid)
+        .populate("rooms", "name price status")
+
+        if(!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            rooms: hotel.rooms
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg: "Error al obtener las habitaciones",
             error: error.message
         })
     }
@@ -196,6 +247,54 @@ export const deleteHotel = async (req, res) => {
             msg: "Error al eliminar el hotel",
             error: error.message
         })
+    }
+}
+
+export const addComment = async (req, res) => {
+    try {
+        const { hid } = req.params;
+        const { rating, comment } = req.body;
+        const { usuario } = req;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                msg: "El rating debe ser un número entre 1 y 5"
+            });
+        }
+
+        const hotel = await Hotel.findById(hid);
+
+        if (!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            });
+        }
+
+        const today = new Date();
+        const onlyDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        hotel.ratings.push({
+            user: usuario.uid,
+            rating,
+            comment,
+            date: onlyDate
+        });
+
+        await hotel.save();
+
+        return res.status(200).json({
+            success: true,
+            msg: "Comentario y calificación agregados correctamente",
+            hotel
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            msg: "Error al agregar el comentario",
+            error: error.message
+        });
     }
 }
 
