@@ -31,3 +31,5 @@ const router = Router()
  *         description: Reservación no encontrada
  */
 router.post("/generate", generateBillValidator, generateBill);
+
+export default router; 
