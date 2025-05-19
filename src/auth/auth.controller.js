@@ -17,8 +17,7 @@ export const register = async (req, res) => {
             message: "You have successfully registered",
             success: true,
             name: user.name,
-            email: user.email,
-            id: user._id
+            email: user.email
         });
     } catch (err) {
         return res.status(500).json({
