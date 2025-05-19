@@ -13,6 +13,7 @@ import userRoutes from "../src/user/user.routes.js";
 import hotelRoutes from "../src/hotel/hotel.routes.js";
 import roomRoutes from "../src/room/room.routes.js";
 import eventRoutes from "../src/event/event.routes.js";
+import createDefaultAdmin from "./default-data.js";
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false }));
@@ -36,6 +37,7 @@ const routes = (app) => {
 const conectarDB = async () => {
     try {
         await dbConnection();
+        await createDefaultAdmin();
     } catch (err) {
         console.log(`Database connection failed: ${err}`);
         process.exit(1);
