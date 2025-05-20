@@ -17,6 +17,7 @@ const createDefaultAdmin = async () => {
                 email: aEmail,
                 password: encryptedPassword,
                 role: 'ADMIN_ROLE',
+                profilePicture: "https://res.cloudinary.com/dibe6yrzf/image/upload/v1747668225/perfil-de-usuario_cxmmxq.png"
             })
  
             await aUser.save()
