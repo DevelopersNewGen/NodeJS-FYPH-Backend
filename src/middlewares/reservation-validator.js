@@ -8,7 +8,7 @@ import { reservationExists } from '../helpers/db-validator.js';
 export const reserveRoomValidator = [
     validateJWT,
     hasRoles('CLIENT_ROLE'),
-    body('room').notEmpty().withMessage('Room ID es requerido').isMongoId(),
+    param('rid').notEmpty().withMessage('Room ID es requerido').isMongoId(),
     body('startDate').notEmpty().withMessage('Start date es requerido').isISO8601(),
     body('exitDate').notEmpty().withMessage('End date es requerido').isISO8601(),
     validateField,

@@ -36,7 +36,7 @@ const router = Router();
  *       500:
  *         description: Error al crear la reservación
  */
-router.post("/createReser",reserveRoomValidator, createReservation);
+router.post("/createReser/:rid",reserveRoomValidator, createReservation);
 
 /**
  * @swagger

@@ -7,7 +7,6 @@ export const createReservation = async (req, res) => {
         const { rid } = req.params; 
         const {usuario} = req;
         const { startDate, extiDate, ...otherData } = req.body;
-
         const room = await Room.findById(rid);
         if (!room) {
             return res.status(404).json({
@@ -19,8 +18,8 @@ export const createReservation = async (req, res) => {
         const reservationData = {
             startDate,
             extiDate,
-            user: usuario.uid,
-            room: room.rid,
+            user: usuario._id,
+            room: room._id,
             ...otherData
         };
         const reservation = await Reservation.create(reservationData);
