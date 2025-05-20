@@ -51,12 +51,12 @@ export const login = async (req, res) => {
             })
         }
 
-        const webToken = await generateJWT(acces.id)
+        const webToken = await generateJWT(acces.id, acces.email)
         return res.status(200).json({
             success: true,
             message: "login successful",
             userDetails: {
-                role: `Successfully logged`,
+                email: acces.email,
                 token: webToken
             }
         })
