@@ -7,7 +7,7 @@ const createDefaultAdmin = async () => {
  
         if (!existingAdmin) {
             const aEmail = 'admin@gmail.com'
-            const aPassword = 'admin123'
+            const aPassword = 'Admin123@'
  
             const encryptedPassword = await hash(aPassword)
  
