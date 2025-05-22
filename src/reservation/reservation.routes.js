@@ -3,6 +3,7 @@ import {
     createReservation,
     getReservationById,
     deleteReservation,
+    getReservationsByRoom
 } from "./reservation.controller.js";
 import { 
     reserveRoomValidator,
@@ -84,5 +85,26 @@ router.get("/listReser/:rid", getReservationById);
  *         description: Error al eliminar la reservación
  */
 router.delete("/deleteReser/:rid",cancelReservationValidator, deleteReservation);
+
+/**
+ * @swagger
+ * /listReserByRoom/{rid}:
+ *   get:
+ *     summary: Obtiene todas las reservaciones de una habitación por ID
+ *     tags: [Reservations]
+ *     parameters:
+ *       - in: path
+ *         name: rid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la habitación
+ *     responses:
+ *       200:
+ *         description: Reservaciones encontradas
+ *       404:
+ *         description: Reservaciones no encontradas
+ */
+router.get("/listReserByRoom/:rid", getReservationsByRoom);
 
 export default router;

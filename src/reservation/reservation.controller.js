@@ -121,3 +121,32 @@ export const deleteReservation = async (req, res) => {
         });
     }
 };
+
+export const getReservationsByRoom = async (req, res) => {
+    try {
+        const { rid } = req.params;
+
+        const room = await Room.findById(rid);
+        if (!room) {
+            return res.status(404).json({
+                success: false,
+                message: "Habitación no encontrada",
+            });
+        }
+
+        const reservations = await Reservation.find({
+            room: rid, status: true})
+
+        res.status(200).json({
+            success: true,
+            count: reservations.length,
+            reservations,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: "Error al obtener las reservaciones de la habitación",
+            error: err.message,
+        });
+    }
+};
