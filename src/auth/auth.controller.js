@@ -12,12 +12,19 @@ export const register = async (req, res) => {
         data.profilePicture = Img
 
         const user = await User.create(data);
+
         console.log(user)
+
+        const webToken = await generateJWT(user.id)
         return res.status(201).json({
             message: "You have successfully registered",
             success: true,
-            name: user.name,
-            email: user.email
+            userDetails: {
+                email: user.email,
+                role: user.role,
+                img: user.profilePicture,
+                token: webToken
+            }
         });
     } catch (err) {
         return res.status(500).json({
