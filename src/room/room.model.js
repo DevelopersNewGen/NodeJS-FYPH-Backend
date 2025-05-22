@@ -4,8 +4,7 @@ const roomSchema = Schema({
     numRoom: {
         type: String,
         required: [true, "Room number is required"],
-        maxLength: [35, "Room number cannot exceed 35 characters"],
-        unique: true
+        maxLength: [35, "Room number cannot exceed 35 characters"]
     },
     description: {
         type: String,
