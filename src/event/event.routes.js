@@ -12,6 +12,8 @@ import {
     createEventValidator, generalValidator, deleteEventValidator, validateSearchByHost,
 } from "../middlewares/event-validator.js";
 
+import { uploadEventImage } from "../middlewares/multer-uploads.js";
+
 const router = Router();
 
 /**
@@ -93,7 +95,7 @@ router.get("/:eid", generalValidator, getEventById);
  *       400:
  *         description: Error de validación
  */
-router.post("/createEvent", createEventValidator, createEvent);
+router.post("/createEvent",  uploadEventImage.array("pictures", 5), createEventValidator, createEvent);
 
 /**
  * @swagger

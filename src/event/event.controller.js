@@ -51,8 +51,12 @@ export const getEventById = async (req, res) => {
 export const createEvent = async (req, res) => {
     try {
         const { usuario } = req;
-        console.log(usuario);
-        const data = req.body;
+        
+        const imgs = req.imgs
+        const data = req.body
+
+        data.images = imgs
+         
         data.adminEvent = usuario._id;
 
         const newEvent = new Event(data);
