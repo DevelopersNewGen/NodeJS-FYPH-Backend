@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { getUserById, getUsers, deleteUserAdmin, updatePassword, updateUserUser, updateUserAdmin, updateRole, 
-    deleteUserClient, updateProfilePicture, getUserReservations } from "./user.controller.js";
+    deleteUserClient, updateProfilePicture, getUserReservations, getUserRole } from "./user.controller.js";
 import { getUserByIdValidator, updatePasswordValidator, deleteUserValidatorClient, deleteUserValidatorAdmin, 
-    createUserValidation, updateRoleValidator, getUserValidation, updateProfilePictureValidator, getUserReservationsValidator } from "../middlewares/user-validator.js";
+    createUserValidation, updateRoleValidator, getUserValidation, updateProfilePictureValidator, getUserReservationsValidator, getRoleValidator } from "../middlewares/user-validator.js";
 import { register } from "../auth/auth.controller.js";
 import { uploadProfilePicture } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMiddleware } from "../middlewares/img-uploads.js";
@@ -270,6 +270,8 @@ router.patch("/updateProfilePicture", uploadProfilePicture.single("img"), cloudi
  *         description: Error del servidor
  */
 router.get("/getReservations", getUserReservationsValidator, getUserReservations);
+
+router.get("/getRole", getRoleValidator, getUserRole)
 
 export default router;
 

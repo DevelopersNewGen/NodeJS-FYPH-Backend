@@ -151,3 +151,10 @@ export const getUserReservationsValidator = [
     validateField,
     handleErrors
 ]
+
+
+export const getRoleValidator = [
+    validateJWT,
+    validateField,
+    handleErrors
+]

@@ -21,7 +21,6 @@ export const register = async (req, res) => {
             success: true,
             userDetails: {
                 email: user.email,
-                role: user.role,
                 img: user.profilePicture,
                 token: webToken
             }
@@ -64,7 +63,6 @@ export const login = async (req, res) => {
             message: "login successful",
             userDetails: {
                 email: acces.email,
-                role: acces.role,
                 img: acces.profilePicture,
                 token: webToken
             }
