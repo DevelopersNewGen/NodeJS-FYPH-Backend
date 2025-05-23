@@ -1,27 +1,30 @@
 import { Router } from "express";
 import {
     createReservation,
-    getReservations,
     getReservationById,
-    updateReservation,
     deleteReservation,
-    getUserReservations
+    getReservationsByRoom
 } from "./reservation.controller.js";
 import { 
-    getUserReservationsValidator,
     reserveRoomValidator,
     cancelReservationValidator,
-    updateReservationValidator
  } from "../middlewares/reservation-validator.js";
 
 const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Reservations
+ *   description: API for managing reservations
+ */
+
+/**
+ * @swagger
  * /createReser:
  *   post:
  *     summary: Crea una nueva reservación
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     requestBody:
  *       required: true
  *       content:
@@ -34,28 +37,14 @@ const router = Router();
  *       500:
  *         description: Error al crear la reservación
  */
-router.post("/createReser",reserveRoomValidator, createReservation);
+router.post("/createReser/:rid",reserveRoomValidator, createReservation);
 
 /**
  * @swagger
- * /:
- *   get:
- *     summary: Lista todas las reservaciones activas
- *     tags: [Reservaciones]
- *     responses:
- *       200:
- *         description: Lista de reservaciones
- *       500:
- *         description: Error al obtener las reservaciones
- */
-router.get("/", getReservations);
-
-/**
- * @swagger
- * /listReser/{id}:
+ * /listReser/{rid}:
  *   get:
  *     summary: Obtiene una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
  *         name: id
@@ -71,46 +60,18 @@ router.get("/", getReservations);
  *       500:
  *         description: Error al obtener la reservación
  */
-router.get("/listReser/:id", getReservationById);
+router.get("/listReser/:rid", getReservationById);
+
 
 /**
  * @swagger
- * /updateReser/:{id}:
- *   put:
- *     summary: Edita una reservación por ID
- *     tags: [Reservaciones]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID de la reservación
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *     responses:
- *       200:
- *         description: Reservación actualizada
- *       404:
- *         description: Reservación no encontrada
- *       500:
- *         description: Error al actualizar la reservación
- */
-router.put("/updateReser/:id",updateReservationValidator, updateReservation);
-
-/**
- * @swagger
- * /deleteReser/:{id}:
+ * /deleteReser/{rid}:
  *   delete:
  *     summary: Elimina (soft delete) una reservación por ID
- *     tags: [Reservaciones]
+ *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: rid
  *         required: true
  *         schema:
  *           type: string
@@ -123,20 +84,27 @@ router.put("/updateReser/:id",updateReservationValidator, updateReservation);
  *       500:
  *         description: Error al eliminar la reservación
  */
-router.delete("/deleteReser/:id",cancelReservationValidator, deleteReservation);
+router.delete("/deleteReser/:rid",cancelReservationValidator, deleteReservation);
 
 /**
  * @swagger
- * /userReservations:
+ * /listReserByRoom/{rid}:
  *   get:
- *     summary: Obtiene el historial de reservaciones de un usuario
- *     tags: [Reservaciones]
+ *     summary: Obtiene todas las reservaciones de una habitación por ID
+ *     tags: [Reservations]
+ *     parameters:
+ *       - in: path
+ *         name: rid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la habitación
  *     responses:
  *       200:
- *         description: Historial de reservaciones obtenido exitosamente
- *       500:
- *         description: Error al obtener el historial de reservaciones
+ *         description: Reservaciones encontradas
+ *       404:
+ *         description: Reservaciones no encontradas
  */
-router.get("/userReser", getUserReservationsValidator, getUserReservations);
+router.get("/listReserByRoom/:rid", getReservationsByRoom);
 
 export default router;

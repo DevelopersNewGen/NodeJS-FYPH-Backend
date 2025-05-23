@@ -20,7 +20,7 @@ const router = Router();
  * @swagger
  * tags:
  *   name: Event
- *   description: Endpoints para la gestión de eventos
+ *   description: API for managing events
  */
 
 /**

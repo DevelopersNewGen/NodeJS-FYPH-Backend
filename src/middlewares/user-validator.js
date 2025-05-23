@@ -142,3 +142,19 @@ export const updateProfilePictureValidator = [
     validateField,
     handleErrors
 ]
+
+export const getUserReservationsValidator = [
+    validateJWT,
+    hasRoles("CLIENT_ROLE"),
+    param("uid").isMongoId().withMessage("The id is not valid"),
+    param("uid").custom(userExists),
+    validateField,
+    handleErrors
+]
+
+
+export const getRoleValidator = [
+    validateJWT,
+    validateField,
+    handleErrors
+]

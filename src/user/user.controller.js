@@ -1,5 +1,6 @@
 import { hash, verify } from "argon2"
 import User from "../user/user.model.js";
+import Reservation from "../reservation/reservation.model.js";
 
 export const getUserById = async (req, res) => {
     try {
@@ -197,6 +198,23 @@ export const updateRole = async (req,res) => {
     }
 }
 
+export const getUserReservations = async (req, res) => {
+    try {
+        const { usuario } = req;
+        const reservations = await Reservation.find({ user: usuario.uid });
+
+        return res.status(200).json({
+            success: true,
+            reservations,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener el historial de reservaciones',
+            error: err.message,
+        });
+    }
+}
 
 export  const updateProfilePicture = async (req, res) => {
     try {
@@ -223,6 +241,26 @@ export  const updateProfilePicture = async (req, res) => {
         return res.status(500).json({
             success: false,
             msg: 'Error al actualizar usuario',
+            error: err.message
+        });
+    }
+}
+
+export const getUserRole = async (req, res) => {
+    try{
+        const { usuario } = req;
+
+        const user = await User.findById(usuario._id)
+
+
+        return res.status(200).json({
+            success: true,
+            role: user.role
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            msg: 'Error al obtener el rol del usuario',
             error: err.message
         });
     }

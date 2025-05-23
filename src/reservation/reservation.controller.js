@@ -1,9 +1,39 @@
 import Reservation from "./reservation.model.js";
+import Room from "../room/room.model.js";
+import Hotel from "../hotel/hotel.model.js";
 
 export const createReservation = async (req, res) => {
     try {
-        const data = req.body;
-        const reservation = await Reservation.create(data);
+        const { rid } = req.params; 
+        const {usuario} = req;
+        const { startDate, extiDate, ...otherData } = req.body;
+        const room = await Room.findById(rid);
+        if (!room) {
+            return res.status(404).json({
+                success: false,
+                message: "Habitación no encontrada"
+            });
+        }
+
+        const reservationData = {
+            startDate,
+            extiDate,
+            user: usuario._id,
+            room: room._id,
+            ...otherData
+        };
+        const reservation = await Reservation.create(reservationData);
+
+        room.reservations.push(reservation.rid);
+        await room.save();
+
+        if (room.hotel) {
+            await Hotel.findByIdAndUpdate(
+                room.hotel,
+                { $push: { reservations: reservation._id } }
+            );
+        }
+
         res.status(201).json({
             success: true,
             message: "Reservación creada exitosamente",
@@ -13,22 +43,6 @@ export const createReservation = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error al crear la reservación",
-            error: err.message
-        });
-    }
-};
-
-export const getReservations = async (req, res) => {
-    try {
-        const reservations = await Reservation.find({ status: true });
-        res.status(200).json({
-            success: true,
-            reservations
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Error al obtener las reservaciones",
             error: err.message
         });
     }
@@ -57,34 +71,36 @@ export const getReservationById = async (req, res) => {
     }
 };
 
-export const updateReservation = async (req, res) => {
+
+export const deleteReservation = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = req.body;
-        const updated = await Reservation.findByIdAndUpdate(id, data, { new: true });
-        if (!updated) {
+
+        const reservation = await Reservation.findById(id);
+        if (!reservation) {
             return res.status(404).json({
                 success: false,
                 message: "Reservación no encontrada"
             });
         }
-        res.status(200).json({
-            success: true,
-            message: "Reservación actualizada",
-            reservation: updated
-        });
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Error al actualizar la reservación",
-            error: err.message
-        });
-    }
-};
 
-export const deleteReservation = async (req, res) => {
-    try {
-        const { id } = req.params;
+        if (reservation.room) {
+            await Room.findByIdAndUpdate(
+                reservation.room,
+                { $pull: { reservations: reservation._id } }
+            );
+        }
+
+        if (reservation.room) {
+            const room = await Room.findById(reservation.room);
+            if (room && room.hotel) {
+                await Hotel.findByIdAndUpdate(
+                    room.hotel,
+                    { $pull: { reservations: reservation._id } }
+                );
+            }
+        }
+
         const deleted = await Reservation.findByIdAndUpdate(id, { status: false }, { new: true });
         if (!deleted) {
             return res.status(404).json({
@@ -106,22 +122,30 @@ export const deleteReservation = async (req, res) => {
     }
 };
 
-export const getUserReservations = async (req, res) => {
+export const getReservationsByRoom = async (req, res) => {
     try {
-        const { usuario } = req;
+        const { rid } = req.params;
 
-        const reservations = await Reservation.find({ user: usuario._id })
-            //.populate('', '')
-            //.populate('', '');
+        const room = await Room.findById(rid);
+        if (!room) {
+            return res.status(404).json({
+                success: false,
+                message: "Habitación no encontrada",
+            });
+        }
 
-        return res.status(200).json({
+        const reservations = await Reservation.find({
+            room: rid, status: true})
+
+        res.status(200).json({
             success: true,
+            count: reservations.length,
             reservations,
         });
     } catch (err) {
-        return res.status(500).json({
+        res.status(500).json({
             success: false,
-            message: 'Error al obtener el historial de reservaciones',
+            message: "Error al obtener las reservaciones de la habitación",
             error: err.message,
         });
     }

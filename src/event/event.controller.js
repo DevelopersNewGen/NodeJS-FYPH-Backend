@@ -56,7 +56,8 @@ export const createEvent = async (req, res) => {
         const data = req.body
 
         data.images = imgs
-         
+        
+        const data = req.body;
         data.adminEvent = usuario._id;
 
         const newEvent = new Event(data);
