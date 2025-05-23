@@ -107,7 +107,7 @@ export const createServiceValidator = [
     hasRoles("HOST_ROLE"),
     body("type").optional().notEmpty().withMessage("Service type is required").isIn(validServices).withMessage(`Invalid service type. Valid types are: ${validServices.join(", ")}`),
     body("description").notEmpty().withMessage("Description is required"),
-    body("price").isNumeric.withMessage("The price is required and most be a number"),
+    body("price").isNumeric().withMessage("The price is required and most be a number"),
     validateField,
     handleErrors
 ]
