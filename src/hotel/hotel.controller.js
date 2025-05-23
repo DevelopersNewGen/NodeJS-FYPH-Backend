@@ -99,21 +99,20 @@ export const getReservationsByHotel = async (req, res) => {
 
 export const getRoomsByHotel = async (req, res) => {
     try {
-        const { hid } = req.params
-        const hotel = await Hotel.findById(hid)
-        .populate("rooms", "name price status")
-
+        const { usuario } = req
+        const hotel = await Hotel.findOne({ host: usuario._id })  
+ 
         if(!hotel) {
             return res.status(404).json({
                 msg: "Hotel no encontrado"
             })
         }
-
+ 
         return res.status(200).json({
             success: true,
             rooms: hotel.rooms
         })
-
+ 
     } catch (error) {
         return res.status(500).json({
             msg: "Error al obtener las habitaciones",
