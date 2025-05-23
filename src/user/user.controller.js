@@ -270,7 +270,7 @@ export const getUserLogged = async (req, res) => {
     try{
         const { usuario } = req;
  
-        const user = await User.findById(usuario._id)
+        const user = await User.findById(usuario._id).populate("reservations")
  
         return res.status(200).json({
             success: true,
