@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment} from "../hotel/hotel.controller.js";
-import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator } from "../middlewares/hotel-validator.js";
+import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService} from "../hotel/hotel.controller.js";
+import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator } from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -294,5 +294,79 @@ router.get("/getReservations/:hid", getReservationsByHotelValidator, getReservat
  *         description: Hotel no encontrado
  */
 router.patch("/addComment/:hid", addCommentValidator, addComment);
+
+/**
+ * @swagger
+ * /hotels/createService/{hid}:
+ *   post:
+ *     summary: Agregar un nuevo servicio a un hotel
+ *     tags: [Hotel]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: hid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del hotel al que se le agregará el servicio
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [Hotel, Singleroom, Doubleroom, Suite, Deluxeroom, Event]
+ *                 description: Tipo de servicio
+ *               description:
+ *                 type: string
+ *                 description: Descripción del servicio
+ *               price:
+ *                 type: number
+ *                 description: Precio del servicio
+ *     responses:
+ *       201:
+ *         description: Servicio creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     service:
+ *                       type: object
+ *                       properties:
+ *                         type:
+ *                           type: string
+ *                         description:
+ *                           type: string
+ *                         price:
+ *                           type: number
+ *                     hotel:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *       400:
+ *         description: Error de validación o datos incorrectos
+ *       403:
+ *         description: No autorizado para agregar servicios al hotel
+ *       404:
+ *         description: Hotel no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post("/createService/:hid", createServiceValidator, createService);
 
 export default router;

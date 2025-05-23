@@ -1,6 +1,7 @@
 import Reservation from "./reservation.model.js";
 import Room from "../room/room.model.js";
 import Hotel from "../hotel/hotel.model.js";
+import User from "../user/user.model.js"
 
 export const createReservation = async (req, res) => {
     try {
@@ -8,6 +9,7 @@ export const createReservation = async (req, res) => {
         const {usuario} = req;
         const { startDate, extiDate, ...otherData } = req.body;
         const room = await Room.findById(rid);
+        const user = await User.findById(usuario._id)
         if (!room) {
             return res.status(404).json({
                 success: false,
@@ -25,6 +27,7 @@ export const createReservation = async (req, res) => {
         const reservation = await Reservation.create(reservationData);
 
         room.reservations.push(reservation.rid);
+        user.reservations.push(reservation.rid)
         await room.save();
 
         if (room.hotel) {

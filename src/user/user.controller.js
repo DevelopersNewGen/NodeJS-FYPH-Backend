@@ -265,3 +265,30 @@ export const getUserRole = async (req, res) => {
         });
     }
 }
+
+export const getUserLogged = async (req, res) => {
+    try{
+        const { usuario } = req;
+ 
+        const user = await User.findById(usuario._id)
+ 
+        return res.status(200).json({
+            success: true,
+            user: {
+                img: user.profilePicture,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                reservations: user.reservations,
+                events: user.events,
+                status: user.status
+            }      
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            msg: 'Error al obtener el rol del usuario',
+            error: err.message
+        });
+    }
+}

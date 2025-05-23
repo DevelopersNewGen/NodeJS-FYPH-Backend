@@ -298,3 +298,55 @@ export const addComment = async (req, res) => {
     }
 }
 
+export const createService = async (req, res) => {
+    try {
+        const { hid } = req.params;
+        const { type, description, price } = req.body;
+        const { usuario } = req; 
+
+        const hotel = await Hotel.findById(hid);
+        
+        if (!hotel) {
+            return res.status(404).json({ 
+                success: false,
+                message: "Hotel no encontrado" 
+            });
+        }
+
+        if (hotel.host.toString() !== usuario._id.toString()) {
+            return res.status(403).json({ 
+                success: false,
+                message: "No tienes permiso para agregar servicios a este hotel" 
+            });
+        }
+
+        const newService = {
+            type,
+            description,
+            price
+        };
+
+        hotel.services.push(newService);
+        await hotel.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Servicio creado exitosamente",
+            data: {
+                service: newService,
+                hotel: {
+                    id: hotel._id,
+                    name: hotel.name
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error en createService:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Error al crear el servicio",
+            error: error.message 
+        });
+    }
+};
