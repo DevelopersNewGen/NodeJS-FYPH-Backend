@@ -1,6 +1,17 @@
 import { Schema, model } from "mongoose";
 
 const eventSchema = Schema({
+    
+      images: {
+        type: [String],
+        required: [true, "At least one image is required"],
+        validate: {
+            validator: function (arr) {
+                return arr.length > 0;
+            },
+            message: "Must include at least one image"
+        }
+    },
     name: {
         type: String,
         required: [true, "Name is required"],
