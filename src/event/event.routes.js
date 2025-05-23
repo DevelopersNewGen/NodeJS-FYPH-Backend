@@ -4,6 +4,7 @@ import {
     getEvents,
     getEventById,
     updateEvent,
+    updateEventPictures,
     deleteEvent,
     getEventsByHost
 } from "./event.controller.js";
@@ -11,6 +12,7 @@ import {
 import {
     createEventValidator, generalValidator, deleteEventValidator, validateSearchByHost,
 } from "../middlewares/event-validator.js";
+import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
 import { uploadEventImage } from "../middlewares/multer-uploads.js";
 
@@ -133,6 +135,9 @@ router.post("/createEvent",  uploadEventImage.array("pictures", 5), createEventV
  *         description: Evento no encontrado
  */
 router.put("/editEvent/:eid",generalValidator, updateEvent);
+
+router.patch("/updatePictures/:hid", uploadEventImage.array("pictures", 5), cloudinaryUploadMultiple("events-img"), createEventValidator, updateEventPictures);
+
 
 /**
  * @swagger

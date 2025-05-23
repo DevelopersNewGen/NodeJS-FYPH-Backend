@@ -36,3 +36,16 @@ export const validateSearchByHost = [
     hasRoles('ADMIN_ROLE', 'HOST_ROLE', 'USER_ROLE'),
     param('eid').isMongoId().withMessage('Invalid event ID'),
 ];
+
+export const updateEventValidator = [
+    validateJWT,
+    param('eid').isMongoId().withMessage('Invalid event ID'),
+    body('name').optional().isLength({ max: 50 }).withMessage('Event name must be at most 50 characters'),
+    body('description').optional().isLength({ max: 500 }).withMessage('Description must be at most 500 characters'),
+    body('date').optional().isISO8601().withMessage('Date must be a valid date'),
+    body('location').optional().isLength({ max: 100 }).withMessage('Location must be at most 100 characters'),
+    body('category').optional().isIn(['wedding', 'party', 'business', 'other']).withMessage('Invalid category'),
+    body('cost').optional().isNumeric().withMessage('Cost must be a valid number'),
+    validateField,
+    handleErrors
+];
