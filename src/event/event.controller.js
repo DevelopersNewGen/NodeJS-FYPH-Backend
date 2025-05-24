@@ -100,6 +100,44 @@ export const updateEvent = async (req, res) => {
         });
     }
 };
+export const updateEventPictures = async (req, res) => {
+    try {
+        const { eid } = req.params;
+        if (!req.imgs || req.imgs.length === 0) {
+            return res.status(400).json({
+                msg: "No se han subido imágenes"
+            });
+        }
+
+        const updatedImages = req.imgs;
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            eid,
+            { images: updatedImages },
+            { new: true }
+        );
+
+
+        if (!updatedEvent) {
+            return res.status(404).json({
+                success: false,
+                msg: "Evento no encontrado"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            msg: "Imágenes actualizadas correctamente",
+            event: updatedEvent
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            msg: "Error al actualizar las imágenes del evento",
+            error: error.message
+        });
+    }
+};
 
 export const deleteEvent = async (req, res) => {
     try {
