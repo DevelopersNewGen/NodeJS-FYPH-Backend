@@ -97,7 +97,7 @@ router.get("/:eid", generalValidator, getEventById);
  *       400:
  *         description: Error de validación
  */
-router.post("/createEvent",  uploadEventImage.array("pictures", 5), createEventValidator, createEvent);
+router.post("/createEvent",  uploadEventImage.array("pictures", 5),cloudinaryUploadMultiple("events-img"),  createEventValidator, createEvent);
 
 /**
  * @swagger
