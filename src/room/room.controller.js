@@ -124,18 +124,25 @@ export const updateRoomImages = async (req, res) => {
 
 export const filterRooms = async (req, res) => {
   try {
-    const { capacity, pricePerDay, type, startDate, extiDate } = req.query;
+    const { capacity, minPrice, maxPrice, type, startDate, exitDate } = req.query;
 
     let filter = {};
     if (capacity) filter.capacity = capacity;
-    if (pricePerDay) filter.pricePerDay = { $lte: Number(pricePerDay) };
     if (type) filter.type = type;
+
+    if (minPrice && maxPrice) {
+      filter.pricePerDay = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+    } else if (minPrice) {
+      filter.pricePerDay = { $gte: Number(minPrice) };
+    } else if (maxPrice) {
+      filter.pricePerDay = { $lte: Number(maxPrice) };
+    }
 
     let rooms = await Room.find(filter);
 
-    if (startDate && extiDate) {
+    if (startDate && exitDate) {
       const start = new Date(startDate);
-      const end = new Date(extiDate);
+      const end = new Date(exitDate);
       
       const availableRooms = [];
       for (const room of rooms) {
@@ -144,7 +151,7 @@ export const filterRooms = async (req, res) => {
           r.status &&
           (
             (new Date(r.startDate) < end) &&
-            (new Date(r.extiDate) > start)
+            (new Date(r.exitDate) > start)
           )
         );
         if (!hasOverlap) {
