@@ -246,26 +246,6 @@ export  const updateProfilePicture = async (req, res) => {
     }
 }
 
-export const getUserRole = async (req, res) => {
-    try{
-        const { usuario } = req;
-
-        const user = await User.findById(usuario._id)
-
-
-        return res.status(200).json({
-            success: true,
-            role: user.role
-        });
-    } catch (err) {
-        return res.status(500).json({
-            success: false,
-            msg: 'Error al obtener el rol del usuario',
-            error: err.message
-        });
-    }
-}
-
 export const getUserLogged = async (req, res) => {
     try{
         const { usuario } = req;
