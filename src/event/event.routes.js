@@ -16,8 +16,6 @@ import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
 import { uploadEventImage } from "../middlewares/multer-uploads.js";
 
-import { uploadEventImage } from "../middlewares/multer-uploads.js";
-
 const router = Router();
 
 /**
