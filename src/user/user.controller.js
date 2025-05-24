@@ -105,12 +105,19 @@ export const deleteUserClient = async (req, res) => {
 export const updatePassword = async (req, res) => {
     try {
         const { usuario } = req;
-        const { newPassword } = req.body;
+        const { oldPassword, newPassword } = req.body;
 
         const user = await User.findById(usuario._id);
 
-        const matchOldAndNewPassword = await verify(user.password, newPassword);
+        const isOldPasswordCorrect = await verify(user.password, oldPassword);
+        if (!isOldPasswordCorrect) {
+            return res.status(400).json({
+                success: false,
+                message: "La contraseña anterior es incorrecta"
+            });
+        }
 
+        const matchOldAndNewPassword = await verify(user.password, newPassword);
         if (matchOldAndNewPassword) {
             return res.status(400).json({
                 success: false,
