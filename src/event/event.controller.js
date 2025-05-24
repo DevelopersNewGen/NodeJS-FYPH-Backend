@@ -4,7 +4,7 @@ export const getEvents = async (req, res) => {
     try {
         const events = await Event.find({ status: true })
             .populate('hotel', '.name')
-              .populate({path: "adminEvent",select: "name -_id"});
+              .populate({path: "adminEvent",select: "name uid"});
 
         res.status(200).json({
             success: true,
@@ -96,44 +96,6 @@ export const updateEvent = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error updating event',
-            error: error.message
-        });
-    }
-};
-export const updateEventPictures = async (req, res) => {
-    try {
-        const { eid } = req.params;
-        if (!req.imgs || req.imgs.length === 0) {
-            return res.status(400).json({
-                msg: "No se han subido imágenes"
-            });
-        }
-
-        const updatedImages = req.imgs;
-
-        const updatedEvent = await Event.findByIdAndUpdate(
-            eid,
-            { images: updatedImages },
-            { new: true }
-        );
-
-
-        if (!updatedEvent) {
-            return res.status(404).json({
-                success: false,
-                msg: "Evento no encontrado"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            msg: "Imágenes actualizadas correctamente",
-            event: updatedEvent
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            msg: "Error al actualizar las imágenes del evento",
             error: error.message
         });
     }
