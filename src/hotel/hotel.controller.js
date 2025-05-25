@@ -363,3 +363,48 @@ export const createService = async (req, res) => {
         });
     }
 };
+
+export const getUsersByHotel = async (req, res) => {
+    try {
+        const { usuario } = req;
+        const hotel = await Hotel.find({host: usuario._id})
+            .populate({path: "reservations", select: "user status",
+                populate: {path: "user", select: "name email role status"}})
+            
+ 
+        if (!hotel) {
+            return res.status(404).json({
+                msg: "Hotel no encontrado"
+            });
+        }
+ 
+        const uniqueUsers = {};
+        hotel[0].reservations.forEach(reservation => {
+            if (
+                reservation.status === true &&
+                reservation.user &&
+                !uniqueUsers[reservation.user._id]
+            ) {
+                uniqueUsers[reservation.user._id] = {
+                    id: reservation.user._id,
+                    name: reservation.user.name,
+                    email: reservation.user.email,
+                    role: reservation.user.role,
+                    status: reservation.user.status
+                };
+            }
+        });
+
+        const users = Object.values(uniqueUsers);
+ 
+        return res.status(200).json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        return res.status(500).json({
+            msg: "Error al obtener los usuarios",
+            error: error.message
+        });
+    }
+}

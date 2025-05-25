@@ -123,3 +123,9 @@ export const parseServicesMiddleware = (req, res, next) => {
   if (typeof req.body.services === "undefined") req.body.services = [];
   next();
 };
+
+export const getUsersByHotelValidator = [
+    validateJWT,
+    validateField,
+    handleErrors
+]

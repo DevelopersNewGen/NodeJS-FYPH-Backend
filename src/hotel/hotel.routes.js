@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService, getRoomsByHotelById } from "../hotel/hotel.controller.js";
-import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator, parseServicesMiddleware} from "../middlewares/hotel-validator.js";
+import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService, getRoomsByHotelById, getUsersByHotel } from "../hotel/hotel.controller.js";
+import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator, parseServicesMiddleware, getUsersByHotelValidator} from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
  
@@ -386,5 +386,7 @@ router.post("/createService/:hid", createServiceValidator, createService);
  *         description: No autorizado o token inválido
  */
 router.get('/getRoomsByHotel/:hid', getRoomsByHotelById);
+
+router.get("/clients", getUsersByHotelValidator, getUsersByHotel)
  
 export default router;
