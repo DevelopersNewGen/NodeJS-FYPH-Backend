@@ -7,6 +7,7 @@ import { handleErrors } from "./handle-errors.js"
 // Validador para crear un evento
 export const createEventValidator = [
     validateJWT,
+<<<<<<< Updated upstream
     body('name').notEmpty().withMessage('Name is required').isLength({ max: 50 }).withMessage('Name cannot exceed 50 characters'),
     body('description').notEmpty().withMessage('Description is required').isLength({ max: 200 }).withMessage('Description cannot exceed 200 characters'),
     body('date').notEmpty().withMessage('Date is required').isISO8601().withMessage('Date must be a valid date'),
@@ -20,6 +21,41 @@ export const generalValidator=[
     validateJWT,
     hasRoles('ADMIN_ROLE', 'HOST_ROLE'), 
     param('eid').isMongoId().withMessage('Invalid event ID'),
+=======
+    hasRoles("HOST_ROLE", "ADMIN_ROLE", "CLIENT_ROLE"),
+
+    body("name")
+        .notEmpty().withMessage("Name is required")
+        .isLength({ max: 50 }).withMessage("Name cannot exceed 50 characters"),
+
+    body("description")
+        .notEmpty().withMessage("Description is required")
+        .isLength({ max: 200 }).withMessage("Description cannot exceed 200 characters"),
+
+    body("date")
+        .notEmpty().withMessage("Date is required")
+        .isISO8601().withMessage("Invalid date format"),
+
+    body("time")
+        .notEmpty().withMessage("Time is required"),
+
+    body("location")
+        .notEmpty().withMessage("Location is required")
+        .isLength({ max: 100 }).withMessage("Location cannot exceed 100 characters"),
+
+    body("category")
+        .notEmpty()
+        .isIn(validCategories).withMessage(`Category must be one of: ${validCategories.join(", ")}`),
+
+    body("cost")
+        .notEmpty()
+        .isNumeric().withMessage("Cost must be a number"),
+
+    body("hotel")
+        .notEmpty()
+        .isMongoId().withMessage("Hotel must be a valid Mongo ID"),
+
+>>>>>>> Stashed changes
     validateField,
     handleErrors
 ]
