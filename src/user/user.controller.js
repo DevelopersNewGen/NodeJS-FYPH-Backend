@@ -257,9 +257,9 @@ export const getUserLogged = async (req, res) => {
     try{
         const { usuario } = req;
  
-        const user = await User.findById(usuario._id).populate.
+        const user = await User.findById(usuario._id).
             populate({ path: "reservations",
-                select: "startDate endDate status room",
+                select: "startDate exitDate status room",
                 populate: {
                     path: "room",
                     select: "hotel numRoom",
@@ -271,7 +271,6 @@ export const getUserLogged = async (req, res) => {
             }).populate({path: "events",
                 select: "name date category"
             });
-            console.log(user)
         return res.status(200).json({
             success: true,
             user: {

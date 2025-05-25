@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService, getRoomsByHotelById } from "../hotel/hotel.controller.js";
-import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator } from "../middlewares/hotel-validator.js";
+import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator, parseServicesMiddleware} from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
  
@@ -66,7 +66,7 @@ const router = Router();
  *       400:
  *         description: Error de validación o datos incorrectos
  */
-router.post("/createHotel", uploadHotelImage.array("pictures", 5), cloudinaryUploadMultiple("hotels-img"), createHotelValidator, createHotel);
+router.post("/createHotel", uploadHotelImage.array("pictures", 5), cloudinaryUploadMultiple("hotels-img"),parseServicesMiddleware, createHotelValidator, createHotel);
  
 /**
  * @swagger

@@ -3,49 +3,64 @@ import User from '../user/user.model.js'
 import Room from '../room/room.model.js'
  
 export const createHotel = async (req, res) => {
-    try {
-        const imgs = req.imgs
-        const data = req.body
- 
-        data.images = imgs
-       
- 
-        const host = await User.findById(data.host)
-        if (!host || !host.status) {
-            return res.status(404).json({
-                msg: "Host no encontrado"
-            })
-        }
- 
-        if (host.role !== "HOST_ROLE") {
-            return res.status(400).json({
-                msg: "El usuario asignado no tiene las credenciales necesarias"
-            })
-        }
- 
-        if (!imgs || imgs.length === 0) {
-            return res.status(400).json({
-            msg: "Se requiere al menos una imagen"
-        })
-        }
- 
-        const newHotel = await Hotel.create(data)
- 
-        return res.status(201).json({
-            success: true,
-            msg: "Hotel creado correctamente",
-            newHotel
-        })
- 
-    }catch (error) {
-        return res.status(500).json({
-            success: false,
-            msg: "Error al crear el hotel",
-            error: error.message
-        })
+  try {
+    const imgs = req.files || []; 
+    const data = req.body;
+
+    if (imgs.length > 0) {
+      data.images = imgs.map(file => file.filename || file.path);
+    } else {
+      return res.status(400).json({
+        msg: "Se requiere al menos una imagen"
+      });
     }
- 
-}
+
+    let services;
+    try {
+      if (typeof data.services === "string") {
+        services = JSON.parse(data.services);
+      } else {
+        services = data.services;
+      }
+    } catch (err) {
+      console.error("Error parseando services:", err);
+      return res.status(400).json({
+        msg: "Error en el formato de services"
+      });
+    }
+
+    data.services = services;
+
+    const host = await User.findById(data.host);
+    if (!host || !host.status) {
+      return res.status(404).json({
+        msg: "Host no encontrado"
+      });
+    }
+
+    if (host.role !== "HOST_ROLE") {
+      return res.status(400).json({
+        msg: "El usuario asignado no tiene las credenciales necesarias"
+      });
+    }
+
+    const newHotel = await Hotel.create(data);
+
+    return res.status(201).json({
+      success: true,
+      msg: "Hotel creado correctamente",
+      newHotel
+    });
+
+  } catch (error) {
+    console.error("Error en createHotel:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Error al crear el hotel",
+      error: error.message
+    });
+  }
+};
  
 export const getHotels = async (req, res) =>{
     try{
