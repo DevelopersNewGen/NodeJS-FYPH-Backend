@@ -26,7 +26,7 @@ const reservationSchema = Schema({
 })
 
 reservationSchema.methods.toJSON = function () {
-    const { user, _id, ...reservation } = this.toObject()
+    const {_id, ...reservation } = this.toObject()
     reservation.rid = _id 
     return reservation
 }

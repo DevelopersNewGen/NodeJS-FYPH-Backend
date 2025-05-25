@@ -1,7 +1,7 @@
 import Hotel from './hotel.model.js'
 import User from '../user/user.model.js'
 import Room from '../room/room.model.js'
- 
+ import Reservation from "../reservation/reservation.model.js";
 export const createHotel = async (req, res) => {
   try {
     const imgs = req.imgs || [];
@@ -87,31 +87,44 @@ export const getHotels = async (req, res) =>{
         })
     }
 }
- 
+
+
 export const getReservationsByHotel = async (req, res) => {
     try {
-        const { hid } = req.params
-        const hotel = await Hotel.findById(hid)
-        .populate("reservations", "room")
- 
-        if(!hotel) {
+        const { hid } = req.params;
+
+        const rooms = await Room.find({ hotel: hid }).select("_id");
+
+        if (!rooms.length) {
             return res.status(404).json({
-                msg: "Hotel no encontrado"
-            })
+                success: false,
+                message: "No hay habitaciones para este hotel.",
+            });
         }
- 
+
+        const roomIds = rooms.map((room) => room._id);
+
+        const reservations = await Reservation.find({
+            room: { $in: roomIds },
+            status: true
+        })
+        .populate("room", "numRoom type") 
+        .populate("user", "name email");  
+
         return res.status(200).json({
             success: true,
-            reservations: hotel.reservations
-        })
- 
+            reservations,
+        });
+
     } catch (error) {
         return res.status(500).json({
-            msg: "Error al obtener las reservaciones",
+            success: false,
+            message: "Error al obtener las reservaciones",
             error: error.message
-        })
+        });
     }
-}
+};
+
  
 export const getRoomsByHotelById = async (req, res) => {
     try {

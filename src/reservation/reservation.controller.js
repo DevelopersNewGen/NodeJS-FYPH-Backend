@@ -77,15 +77,16 @@ export const getReservationById = async (req, res) => {
 
 export const deleteReservation = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { rid } = req.params;
 
-        const reservation = await Reservation.findById(id);
+        const reservation = await Reservation.findById(rid);
         if (!reservation) {
             return res.status(404).json({
                 success: false,
                 message: "Reservación no encontrada"
             });
         }
+
 
         if (reservation.room) {
             await Room.findByIdAndUpdate(
@@ -104,13 +105,14 @@ export const deleteReservation = async (req, res) => {
             }
         }
 
-        const deleted = await Reservation.findByIdAndUpdate(id, { status: false }, { new: true });
+        const deleted = await Reservation.findByIdAndUpdate(rid, { status: false }, { new: true });
         if (!deleted) {
             return res.status(404).json({
                 success: false,
                 message: "Reservación no encontrada"
             });
         }
+
         res.status(200).json({
             success: true,
             message: "Reservación eliminada",
@@ -125,6 +127,8 @@ export const deleteReservation = async (req, res) => {
     }
 };
 
+
+
 export const getReservationsByRoom = async (req, res) => {
     try {
         const { rid } = req.params;
@@ -138,8 +142,12 @@ export const getReservationsByRoom = async (req, res) => {
         }
 
         const reservations = await Reservation.find({
-            room: rid, status: true})
-
+            room: rid,
+            status: true,
+        })
+        .populate("user") 
+        .populate("room", "numRoom type"); 
+        console.log(reservations)
         res.status(200).json({
             success: true,
             count: reservations.length,
