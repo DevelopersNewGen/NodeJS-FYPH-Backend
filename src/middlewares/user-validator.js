@@ -77,14 +77,12 @@ export const deleteUserValidatorAdmin = [
 
 export const deleteUserValidatorClient = [
     validateJWT,
-    hasRoles("CLIENT_ROLE", "HOST_ROLE"),
     validateField,
     handleErrors
 ]
 
 export const updatePasswordValidator = [
     validateJWT,
-    hasRoles("ADMIN_ROLE", "CLIENT_ROLE", "HOST_ROLE"),
     body("newPassword").isLength({ min: 8 }).withMessage("El password debe contener al menos 8 caracteres"),
     validateField,
     handleErrors
@@ -138,7 +136,6 @@ export const updateRoleValidator =[
 
 export const updateProfilePictureValidator = [
     validateJWT,
-    hasRoles("ADMIN_ROLE", "CLIENT_ROLE"),
     validateField,
     handleErrors
 ]
