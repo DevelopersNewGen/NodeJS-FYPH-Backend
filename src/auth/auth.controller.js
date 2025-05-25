@@ -13,8 +13,6 @@ export const register = async (req, res) => {
 
         const user = await User.create(data);
 
-        console.log(user)
-
         const webToken = await generateJWT(user.id)
         return res.status(201).json({
             message: "You have successfully registered",
