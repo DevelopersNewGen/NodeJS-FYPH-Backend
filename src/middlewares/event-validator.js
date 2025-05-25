@@ -4,24 +4,26 @@ import { hasRoles } from './validate-roles.js';
 import { validateField } from "./validate-fields.js" 
 import { handleErrors } from "./handle-errors.js" 
 
+const validCategories = ['wedding', 'party', 'business', 'other'];
+
 // Validador para crear un evento
 export const createEventValidator = [
     validateJWT,
-<<<<<<< Updated upstream
     body('name').notEmpty().withMessage('Name is required').isLength({ max: 50 }).withMessage('Name cannot exceed 50 characters'),
     body('description').notEmpty().withMessage('Description is required').isLength({ max: 200 }).withMessage('Description cannot exceed 200 characters'),
     body('date').notEmpty().withMessage('Date is required').isISO8601().withMessage('Date must be a valid date'),
     body('time').notEmpty().withMessage('Time is required'),
     body('location').notEmpty().withMessage('Location is required').isLength({ max: 100 }).withMessage('Location cannot exceed 100 characters'),
-    body('category').notEmpty().withMessage('Category is required').isIn(['weding', 'party', 'business', 'other']).withMessage('Invalid category'),
+    body('category').notEmpty().withMessage('Category is required').isIn(validCategories).withMessage('Invalid category'),
     //body('hotel').notEmpty().withMessage('Hotel ID is required').isMongoId().withMessage('Hotel must be a valid ID'),
     body('cost').notEmpty().withMessage('Cost is required').isNumeric().withMessage('Cost must be a number'),
 ];
-export const generalValidator=[
+
+export const generalValidator = [
     validateJWT,
     hasRoles('ADMIN_ROLE', 'HOST_ROLE'), 
     param('eid').isMongoId().withMessage('Invalid event ID'),
-=======
+
     hasRoles("HOST_ROLE", "ADMIN_ROLE", "CLIENT_ROLE"),
 
     body("name")
@@ -55,10 +57,9 @@ export const generalValidator=[
         .notEmpty()
         .isMongoId().withMessage("Hotel must be a valid Mongo ID"),
 
->>>>>>> Stashed changes
     validateField,
     handleErrors
-]
+];
 
 export const deleteEventValidator = [
     validateJWT,
@@ -67,6 +68,7 @@ export const deleteEventValidator = [
     validateField,
     handleErrors
 ];
+
 export const validateSearchByHost = [
     validateJWT,
     hasRoles('ADMIN_ROLE', 'HOST_ROLE', 'USER_ROLE'),
@@ -80,7 +82,7 @@ export const updateEventValidator = [
     body('description').optional().isLength({ max: 500 }).withMessage('Description must be at most 500 characters'),
     body('date').optional().isISO8601().withMessage('Date must be a valid date'),
     body('location').optional().isLength({ max: 100 }).withMessage('Location must be at most 100 characters'),
-    body('category').optional().isIn(['wedding', 'party', 'business', 'other']).withMessage('Invalid category'),
+    body('category').optional().isIn(validCategories).withMessage('Invalid category'),
     body('cost').optional().isNumeric().withMessage('Cost must be a valid number'),
     validateField,
     handleErrors
