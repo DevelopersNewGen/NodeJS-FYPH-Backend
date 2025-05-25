@@ -53,8 +53,8 @@ export const createReservation = async (req, res) => {
 
 export const getReservationById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const reservation = await Reservation.findById(id);
+        const { rid } = req.params;
+        const reservation = await Reservation.findById(rid);
         if (!reservation || !reservation.status) {
             return res.status(404).json({
                 success: false,

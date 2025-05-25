@@ -113,18 +113,18 @@ const hotelSchema = Schema({
     timestamps: true,
     versionKey: false
 });
- 
+
 hotelSchema.methods.toJSON = function () {
-    const { __v, _id, ratings, ...hotel } = this.toObject();
+    const { __v, _id, ...hotel } = this.toObject();
     hotel.hid = _id;
- 
-    if (ratings && ratings.length > 0) {
-        const sum = ratings.reduce((acc, item) => acc + item.rating, 0);
-        hotel.averageRating = parseFloat((sum / ratings.length).toFixed(1));
+
+    if (hotel.ratings && hotel.ratings.length > 0) {
+        const sum = hotel.ratings.reduce((acc, item) => acc + item.rating, 0);
+        hotel.averageRating = parseFloat((sum / hotel.ratings.length).toFixed(1));
     } else {
         hotel.averageRating = 0;
     }
     return hotel;
 };
- 
+
 export default model("Hotel", hotelSchema);

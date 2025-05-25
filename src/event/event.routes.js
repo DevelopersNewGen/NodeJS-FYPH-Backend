@@ -10,7 +10,7 @@ import {
 } from "./event.controller.js";
 
 import {
-    createEventValidator, deleteEventValidator, updateEventValidator, validateSearchByHost
+    createEventValidator, deleteEventValidator, updateEventValidator, validateSearchEventByHost
 } from "../middlewares/event-validator.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -184,6 +184,6 @@ router.delete("/deleteEvent/:eid", deleteEventValidator, deleteEvent);
  *       404:
  *         description: Hotel no encontrado o sin eventos
  */
-router.get("/searchByHost/:eid", validateSearchByHost, getEventsByHost);
+router.get("/searchByHost/:eid", validateSearchEventByHost, getEventsByHost);
 
 export default router;
