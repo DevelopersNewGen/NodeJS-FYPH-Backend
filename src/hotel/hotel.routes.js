@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService} from "../hotel/hotel.controller.js";
+import { createHotel, deleteHotel, getHotels, getHotelById, updateHotel, updateHotelPictures, getReservationsByHotel, addComment, createService, getRoomsByHotelById } from "../hotel/hotel.controller.js";
 import { createHotelValidator, deleteHotelValidator, getHotelByIdValidator, getHotelsValidator, updateHotelPicturesValidator, updateHotelValidator, getReservationsByHotelValidator, addCommentValidator, createServiceValidator } from "../middlewares/hotel-validator.js";
 import { uploadHotelImage } from "../middlewares/multer-uploads.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
-
+ 
 const router = Router();
-
+ 
 /**
  * @swagger
  * tags:
@@ -67,7 +67,7 @@ const router = Router();
  *         description: Error de validación o datos incorrectos
  */
 router.post("/createHotel", uploadHotelImage.array("pictures", 5), cloudinaryUploadMultiple("hotels-img"), createHotelValidator, createHotel);
-
+ 
 /**
  * @swagger
  * /hotels/:
@@ -92,7 +92,7 @@ router.post("/createHotel", uploadHotelImage.array("pictures", 5), cloudinaryUpl
  *         description: Lista de hoteles
  */
 router.get("/", getHotelsValidator, getHotels);
-
+ 
 /**
  * @swagger
  * /hotels/findHotel/{hid}:
@@ -115,7 +115,7 @@ router.get("/", getHotelsValidator, getHotels);
  *         description: Hotel no encontrado
  */
 router.get("/findHotel/:hid", getHotelByIdValidator, getHotelById);
-
+ 
 /**
  * @swagger
  * /hotels/updateHotel/{hid}:
@@ -172,7 +172,7 @@ router.get("/findHotel/:hid", getHotelByIdValidator, getHotelById);
  *         description: Hotel no encontrado
  */
 router.put("/updateHotel/:hid", updateHotelValidator, updateHotel);
-
+ 
 /**
  * @swagger
  * /hotels/updatePictures/{hid}:
@@ -206,7 +206,7 @@ router.put("/updateHotel/:hid", updateHotelValidator, updateHotel);
  *         description: Hotel no encontrado
  */
 router.patch("/updatePictures/:hid", uploadHotelImage.array("pictures", 5), cloudinaryUploadMultiple("hotels-img"), updateHotelPicturesValidator, updateHotelPictures);
-
+ 
 /**
  * @swagger
  * /hotels/deleteHotel/{hid}:
@@ -229,7 +229,7 @@ router.patch("/updatePictures/:hid", uploadHotelImage.array("pictures", 5), clou
  *         description: Hotel no encontrado
  */
 router.delete("/deleteHotel/:hid", deleteHotelValidator, deleteHotel);
-
+ 
 /**
  * @swagger
  * /hotels/getReservations/{hid}:
@@ -254,7 +254,7 @@ router.delete("/deleteHotel/:hid", deleteHotelValidator, deleteHotel);
  *         description: No autorizado o token inválido
  */
 router.get("/getReservations/:hid", getReservationsByHotelValidator, getReservationsByHotel);
-
+ 
 /**
  * @swagger
  * /hotels/addComment/{hid}:
@@ -294,7 +294,7 @@ router.get("/getReservations/:hid", getReservationsByHotelValidator, getReservat
  *         description: Hotel no encontrado
  */
 router.patch("/addComment/:hid", addCommentValidator, addComment);
-
+ 
 /**
  * @swagger
  * /hotels/createService/{hid}:
@@ -368,5 +368,23 @@ router.patch("/addComment/:hid", addCommentValidator, addComment);
  *         description: Error interno del servidor
  */
 router.post("/createService/:hid", createServiceValidator, createService);
-
+ 
+/**
+ * @swagger
+ * /hotels/getRoomsByHotel:
+ *   get:
+ *     summary: Obtener habitaciones del hotel del host autenticado
+ *     tags: [Hotel]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de habitaciones del hotel
+ *       404:
+ *         description: Hotel no encontrado
+ *       401:
+ *         description: No autorizado o token inválido
+ */
+router.get('/getRoomsByHotel/:hid', getRoomsByHotelById);
+ 
 export default router;

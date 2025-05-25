@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-
+ 
 const hotelSchema = Schema({
     name: {
         type: String,
@@ -66,13 +66,17 @@ const hotelSchema = Schema({
         }
     },
     host: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: [true, "Host is required"], 
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Host is required"],
     },
     reservations: [{
         type: Schema.Types.ObjectId,
         ref: "Reservation"
+    }],
+    rooms: [{
+        type: Schema.Types.ObjectId,
+        ref: "Room"
     }],
     ratings: [{
         user: {
@@ -109,11 +113,11 @@ const hotelSchema = Schema({
     timestamps: true,
     versionKey: false
 });
-
+ 
 hotelSchema.methods.toJSON = function () {
     const { __v, _id, ratings, ...hotel } = this.toObject();
     hotel.hid = _id;
-
+ 
     if (ratings && ratings.length > 0) {
         const sum = ratings.reduce((acc, item) => acc + item.rating, 0);
         hotel.averageRating = parseFloat((sum / ratings.length).toFixed(1));
@@ -122,6 +126,5 @@ hotelSchema.methods.toJSON = function () {
     }
     return hotel;
 };
-
-
+ 
 export default model("Hotel", hotelSchema);
