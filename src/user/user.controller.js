@@ -5,7 +5,20 @@ import Reservation from "../reservation/reservation.model.js";
 export const getUserById = async (req, res) => {
     try {
         const { uid } = req.params;
-        const user = await User.findById(uid);
+        const user = await User.findById(uid).
+            populate({ path: "reservations",
+                select: "startDate exitDate status room",
+                populate: {
+                    path: "room",
+                    select: "hotel numRoom",
+                    populate: {
+                        path: "hotel",
+                        select: "name"
+                    }
+                } 
+            }).populate({path: "events",
+                select: "name date category"
+            });;
 
         if (!user) {
             return res.status(404).json({
@@ -76,8 +89,6 @@ export const deleteUserAdmin = async (req, res) => {
 export const deleteUserClient = async (req, res) => {
     try {
         const { usuario } = req;
-
-        console.log(usuario._id)
 
         if (!usuario) {
             return res.status(400).json({
