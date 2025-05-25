@@ -4,7 +4,7 @@ export const getEvents = async (req, res) => {
     try {
         const events = await Event.find({ status: true })
             .populate('hotel', '.name')
-              .populate({path: "adminEvent",select: "name -_id"});
+              .populate({path: "adminEvent",select: "name uid"});
 
         res.status(200).json({
             success: true,

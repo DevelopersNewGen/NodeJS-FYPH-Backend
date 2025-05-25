@@ -19,7 +19,6 @@ export const createHotelValidator = [
                     .isLength({ max: 100 }).withMessage("Address must be at most 100 characters"),
     body("telephone").notEmpty().withMessage("Telephone is required")
                     .isLength({ max: 8 }).withMessage("Telephone must be at most 8 characters"),
-    body("services").isArray({ min: 1 }).withMessage("At least one service must be specified"),
     body("services.*.type").notEmpty().withMessage("Service type is required")
                         .isIn(validServices).withMessage(`Invalid service type. Valid types are: ${validServices.join(", ")}`),
     body("services.*.description").notEmpty().withMessage("Service description is required"),
@@ -98,6 +97,35 @@ export const addCommentValidator = [
     param("hid").isMongoId().withMessage("Invalid hotel ID"),
     body("comment").notEmpty().withMessage("Comment is required")
                     .isLength({ max: 500 }).withMessage("Comment must be at most 500 characters"),
+    validateField,
+    handleErrors
+]
+
+export const createServiceValidator = [
+    validateJWT,
+    hasRoles("HOST_ROLE"),
+    body("type").optional().notEmpty().withMessage("Service type is required").isIn(validServices).withMessage(`Invalid service type. Valid types are: ${validServices.join(", ")}`),
+    body("description").notEmpty().withMessage("Description is required"),
+    body("price").isNumeric().withMessage("The price is required and most be a number"),
+    validateField,
+    handleErrors
+]
+
+export const parseServicesMiddleware = (req, res, next) => {
+  if (typeof req.body.services === "string") {
+    try {
+      req.body.services = JSON.parse(req.body.services);
+      if (!Array.isArray(req.body.services)) req.body.services = [];
+    } catch (e) {
+      req.body.services = [];
+    }
+  }
+  if (typeof req.body.services === "undefined") req.body.services = [];
+  next();
+};
+
+export const getUsersByHotelValidator = [
+    validateJWT,
     validateField,
     handleErrors
 ]

@@ -10,7 +10,7 @@ import {
 } from "./event.controller.js";
 
 import {
-    createEventValidator, generalValidator, deleteEventValidator, validateSearchByHost,
+    createEventValidator, deleteEventValidator, updateEventValidator, validateSearchByHost
 } from "../middlewares/event-validator.js";
 import { cloudinaryUploadMultiple } from "../middlewares/img-uploads.js";
 
@@ -60,7 +60,7 @@ router.get("/", getEvents);
  *       404:
  *         description: Evento no encontrado
  */
-router.get("/:eid", generalValidator, getEventById);
+router.get("/:eid", createEventValidator, getEventById);
 
 /**
  * @swagger
@@ -97,7 +97,8 @@ router.get("/:eid", generalValidator, getEventById);
  *       400:
  *         description: Error de validación
  */
-router.post("/createEvent",  uploadEventImage.array("pictures", 5), createEventValidator, createEvent);
+
+router.post("/createEvent",  uploadEventImage.array("pictures", 5),cloudinaryUploadMultiple("events-img"),  createEventValidator, createEvent);
 
 /**
  * @swagger
@@ -134,7 +135,7 @@ router.post("/createEvent",  uploadEventImage.array("pictures", 5), createEventV
  *       404:
  *         description: Evento no encontrado
  */
-router.put("/editEvent/:eid",generalValidator, updateEvent);
+router.put("/editEvent/:eid", updateEventValidator, updateEvent);
 
 router.patch("/updatePictures/:hid", uploadEventImage.array("pictures", 5), cloudinaryUploadMultiple("events-img"), createEventValidator, updateEventPictures);
 
