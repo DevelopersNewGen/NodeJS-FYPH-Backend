@@ -4,6 +4,7 @@ import {
     getEvents,
     getEventById,
     updateEvent,
+    updateEventPictures,
     deleteEvent,
     getEventsByHost
 } from "./event.controller.js";
@@ -96,6 +97,7 @@ router.get("/:eid", createEventValidator, getEventById);
  *       400:
  *         description: Error de validación
  */
+
 router.post("/createEvent",  uploadEventImage.array("pictures", 5),cloudinaryUploadMultiple("events-img"),  createEventValidator, createEvent);
 
 /**
@@ -134,6 +136,9 @@ router.post("/createEvent",  uploadEventImage.array("pictures", 5),cloudinaryUpl
  *         description: Evento no encontrado
  */
 router.put("/editEvent/:eid", updateEventValidator, updateEvent);
+
+router.patch("/updatePictures/:hid", uploadEventImage.array("pictures", 5), cloudinaryUploadMultiple("events-img"), createEventValidator, updateEventPictures);
+
 
 /**
  * @swagger

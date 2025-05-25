@@ -4,8 +4,8 @@ import { handleErrors } from "./handle-errors.js";
 import { validateJWT } from "./validate-jwt.js";
 import { hasRoles } from "./validate-roles.js";
 import { deleteFileOnError } from "./delete-file-on-error.js";
-// Valid categories
-const validCategories = ["weding", "party", "business", "other"];
+import { validCategories } from "../../constants/valid-categories.js"; // Asegúrate que exista este archivo o ajusta la ruta
+
 
 export const createEventValidator = [
     validateJWT,
@@ -47,6 +47,7 @@ export const createEventValidator = [
     handleErrors
 ];
 
+
 export const updateEventValidator = [
     validateJWT,
     hasRoles("HOST_ROLE", "ADMIN_ROLE"),
@@ -65,6 +66,7 @@ export const updateEventValidator = [
     handleErrors
 ];
 
+
 export const deleteEventValidator = [
     validateJWT,
     hasRoles("HOST_ROLE", "ADMIN_ROLE"),
@@ -73,6 +75,7 @@ export const deleteEventValidator = [
     handleErrors
 ];
 
+
 export const getEventByIdValidator = [
     validateJWT,
     param("eid").isMongoId().withMessage("Invalid event ID"),
@@ -80,9 +83,11 @@ export const getEventByIdValidator = [
     handleErrors
 ];
 
-export const validateSearchByHost = [
+
+export const validateSearchEventByHost = [
     validateJWT,
-    param("eid").isMongoId().withMessage("Invalid host ID"),
+    hasRoles("ADMIN_ROLE", "HOST_ROLE", "USER_ROLE"),
+    param("eid").isMongoId().withMessage("Invalid event ID"),
     validateField,
     handleErrors
 ];
