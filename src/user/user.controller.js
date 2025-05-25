@@ -242,7 +242,7 @@ export  const updateProfilePicture = async (req, res) => {
         return res.status(200).json({
             success: true,
             msg: 'Usuario Actualizado',
-            user: updatedUser,
+            img: data.profilePicture
         });
     } catch (err) {
         return res.status(500).json({
