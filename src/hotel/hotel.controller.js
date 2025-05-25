@@ -4,16 +4,16 @@ import Room from '../room/room.model.js'
  
 export const createHotel = async (req, res) => {
   try {
-    const imgs = req.files || []; 
+    const imgs = req.imgs || [];
     const data = req.body;
 
     if (imgs.length > 0) {
-      data.images = imgs.map(file => file.filename || file.path);
+        data.images = imgs;
     } else {
-      return res.status(400).json({
+        return res.status(400).json({
         msg: "Se requiere al menos una imagen"
-      });
-    }
+    });
+}   
 
     let services;
     try {
