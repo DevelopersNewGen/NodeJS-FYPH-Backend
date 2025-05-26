@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
- 
+
 const hotelSchema = Schema({
     name: {
         type: String,
@@ -78,32 +78,6 @@ const hotelSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: "Room"
     }],
-    ratings: [{
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: true
-        },
-        rating: {
-            type: Number,
-            required: true,
-            min: 1,
-            max: 5
-        },
-        comment: {
-            type: String,
-            maxLength: 300
-        },
-        date: {
-            type: Date,
-            default: () => new Date(new Date().setHours(0, 0, 0, 0)),
-            set: (value) => new Date(new Date(value).setHours(0, 0, 0, 0))
-        }
-    }],
-    averageRating: {
-        type: Number,
-        default: 0
-    },
     status: {
         type: Boolean,
         default: true
@@ -117,13 +91,6 @@ const hotelSchema = Schema({
 hotelSchema.methods.toJSON = function () {
     const { __v, _id, ...hotel } = this.toObject();
     hotel.hid = _id;
-
-    if (hotel.ratings && hotel.ratings.length > 0) {
-        const sum = hotel.ratings.reduce((acc, item) => acc + item.rating, 0);
-        hotel.averageRating = parseFloat((sum / hotel.ratings.length).toFixed(1));
-    } else {
-        hotel.averageRating = 0;
-    }
     return hotel;
 };
 

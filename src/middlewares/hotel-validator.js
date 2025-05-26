@@ -91,15 +91,6 @@ export const getReservationsByHotelValidator = [
     handleErrors
 ]
 
-export const addCommentValidator = [
-    validateJWT,
-    hasRoles("CLIENT_ROLE"),
-    param("hid").isMongoId().withMessage("Invalid hotel ID"),
-    body("comment").notEmpty().withMessage("Comment is required")
-                    .isLength({ max: 500 }).withMessage("Comment must be at most 500 characters"),
-    validateField,
-    handleErrors
-]
 
 export const createServiceValidator = [
     validateJWT,
