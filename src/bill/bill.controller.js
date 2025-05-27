@@ -3,7 +3,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 export const generateBill = async (req, res) => {
     try {
-        const { rid } = req.body;
+        const { rid } = req.params;
         const reservation = await Reservation.findById(rid)
             .populate('user', 'name email')
             .populate('room')

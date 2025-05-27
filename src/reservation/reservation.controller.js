@@ -64,10 +64,10 @@ export const createReservation = async (req, res) => {
             );
         }
 
-        res.status(201).json({
+         res.status(201).json({
             success: true,
             message: "Reservación creada exitosamente",
-            reservation
+            id: reservation._id  
         });
 
     } catch (err) {

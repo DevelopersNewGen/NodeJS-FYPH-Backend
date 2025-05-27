@@ -30,6 +30,6 @@ const router = Router()
  *       404:
  *         description: Reservación no encontrada
  */
-router.post("/generate", generateBillValidator, generateBill);
+router.get("/generate/:rid", generateBillValidator, generateBill);
 
 export default router; 
