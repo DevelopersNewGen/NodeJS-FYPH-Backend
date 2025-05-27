@@ -29,3 +29,62 @@ export const cancelReservationValidator = [
     validateField,
     handleErrors,
 ];
+
+export const createEventReservationValidator = [
+    validateJWT,
+    hasRoles('CLIENT_ROLE'),
+    param("eid").notEmpty().withMessage("Event ID es requerido").isMongoId(),
+    body("reservationDate")
+        .notEmpty().withMessage("Reservation date es requerido")
+        .isISO8601().withMessage("Reservation date debe ser una fecha válida"),
+    body("time").
+        notEmpty().withMessage("Time es requerido")
+        .isLength({ max: 5 }).withMessage("Time no puede exceder los 5 caracteres"),
+    body("attendees")
+        .notEmpty().withMessage("Attendees es requerido")
+        .isInt({ min: 1, max: 100 }).withMessage("Attendees debe ser un número entre 1 y 1000"), 
+    body("description")
+        .optional()
+        .isLength({ max: 500 }).withMessage("Description no puede exceder los 500 caracteres"),
+    validateField,
+    handleErrors,
+];
+
+export const getUserReservedEventsValidator = [
+  validateJWT,
+  validateField,
+  handleErrors,
+];
+
+export const getEventReservationByIdValidator = [
+  validateJWT,
+  param("rid").notEmpty().withMessage("Reservation ID es requerido").isMongoId(),
+  validateField,
+  handleErrors,
+];
+
+export const updateEventReservationValidator = [
+  validateJWT,
+  param("rid").notEmpty().withMessage("Reservation ID es requerido").isMongoId(),
+  body("reservationDate")
+    .optional()
+    .isISO8601().withMessage("Reservation date debe ser una fecha válida"),
+  body("time")
+    .optional()
+    .isLength({ max: 5 }).withMessage("Time no puede exceder los 5 caracteres"),
+  body("attendees")
+    .optional()
+    .isInt({ min: 1, max: 100 }).withMessage("Attendees debe ser un número entre 1 y 100"),
+  body("description")
+    .optional()
+    .isLength({ max: 500 }).withMessage("Description no puede exceder los 500 caracteres"),
+  validateField,
+  handleErrors,
+];
+
+export const deleteEventReservationValidator = [
+  validateJWT,
+  param("rid").notEmpty().withMessage("Reservation ID es requerido").isMongoId(),
+  validateField,
+  handleErrors,
+];

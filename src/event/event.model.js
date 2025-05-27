@@ -55,7 +55,11 @@ const eventSchema = Schema({
     adminEvent:{
         type: Schema.Types.ObjectId,
         ref:"User"
-    }
+    },
+    reservation: [{
+        type: Schema.Types.ObjectId,
+        ref: "EventReservation"
+    }]
 });
 
 eventSchema.methods.toJSON = function () {

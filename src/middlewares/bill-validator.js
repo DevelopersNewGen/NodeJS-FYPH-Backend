@@ -11,3 +11,12 @@ export const generateBillValidator = [
     validateField,
     handleErrors
 ];
+
+export const generateEventBillValidator = [
+    validateJWT,
+    param("eid")
+        .notEmpty().withMessage("rid is required")
+        .isMongoId().withMessage("rid must be a valid Mongo ID"),
+    validateField,
+    handleErrors
+];

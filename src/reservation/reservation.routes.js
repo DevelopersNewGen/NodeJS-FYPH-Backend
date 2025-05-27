@@ -5,9 +5,21 @@ import {
     deleteReservation,
     getReservationsByRoom
 } from "./reservation.controller.js";
+import {
+  createEventReservation,
+  deleteEventReservation,
+  getUserReservedEvents,
+  getEventReservationById,
+  updateEventReservation
+} from "./eventReservation.controller.js";
 import { 
     reserveRoomValidator,
     cancelReservationValidator,
+    createEventReservationValidator,
+    deleteEventReservationValidator,
+    getUserReservedEventsValidator,
+    getEventReservationByIdValidator,
+  updateEventReservationValidator
  } from "../middlewares/reservation-validator.js";
 
 const router = Router();
@@ -107,4 +119,138 @@ router.delete("/deleteReser/:rid",cancelReservationValidator, deleteReservation)
  */
 router.get("/listReserByRoom/:rid", getReservationsByRoom);
 
+/**
+ * @swagger
+ * /eventReservation/create/{eid}:
+ *   post:
+ *     summary: Crear una reservación para un evento
+ *     tags: [EventReservation]
+ *     parameters:
+ *       - in: path
+ *         name: eid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del evento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - reservationDate
+ *               - time
+ *               - attendees
+ *             properties:
+ *               reservationDate:
+ *                 type: string
+ *                 format: date
+ *               time:
+ *                 type: string
+ *               attendees:
+ *                 type: integer
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Reservación creada exitosamente
+ */
+router.post("/createEventReservation/:eid", createEventReservationValidator, createEventReservation);
+
+/**
+ * @swagger
+ * /eventReservation/delete/{rid}:
+ *   delete:
+ *     summary: Eliminar una reservación de evento por ID
+ *     tags: [EventReservation]
+ *     parameters:
+ *       - in: path
+ *         name: rid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la reservación
+ *     responses:
+ *       200:
+ *         description: Reservación eliminada correctamente
+ *       404:
+ *         description: Reservación no encontrada
+ */
+router.delete( "/deleteEventReservation/:rid", deleteEventReservationValidator, deleteEventReservation);
+
+/**
+ * @swagger
+ * /eventReservation/user:
+ *   get:
+ *     summary: Obtener todas las reservaciones de eventos del usuario autenticado
+ *     tags: [EventReservation]
+ *     responses:
+ *       200:
+ *         description: Lista de reservaciones de eventos
+ */
+router.get(
+  "/eventsReservationByUser",getUserReservedEventsValidator, getUserReservedEvents);
+
+  /**
+ * @swagger
+ * /eventReservation/{rid}:
+ *   get:
+ *     summary: Obtener una reservación de evento por ID
+ *     tags: [EventReservation]
+ *     parameters:
+ *       - in: path
+ *         name: rid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la reservación
+ *     responses:
+ *       200:
+ *         description: Reservación encontrada
+ *       404:
+ *         description: Reservación no encontrada
+ */
+router.get("/getEventReservationById/:rid", getEventReservationByIdValidator, getEventReservationById);
+
+/**
+ * @swagger
+ * /eventReservation/update/{rid}:
+ *   put:
+ *     summary: Actualizar una reservación de evento
+ *     tags: [EventReservation]
+ *     parameters:
+ *       - in: path
+ *         name: rid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la reservación
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reservationDate:
+ *                 type: string
+ *                 format: date
+ *               time:
+ *                 type: string
+ *               attendees:
+ *                 type: integer
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Reservación actualizada
+ *       404:
+ *         description: Reservación no encontrada
+ */
+router.put(
+  "/updateEventReservation/:rid",
+  updateEventReservationValidator,
+  updateEventReservation
+);
 export default router;

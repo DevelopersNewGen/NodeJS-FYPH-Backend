@@ -1,6 +1,6 @@
 import { Router } from "express"
-import { generateBill } from "./bill.controller.js"
-import { generateBillValidator } from "../middlewares/bill-validator.js"
+import { generateBill, generateEventReservation } from "./bill.controller.js"
+import { generateBillValidator, generateEventBillValidator } from "../middlewares/bill-validator.js"
 
 const router = Router()
 
@@ -31,5 +31,37 @@ const router = Router()
  *         description: Reservación no encontrada
  */
 router.get("/generate/:rid", generateBillValidator, generateBill);
+
+/**
+ * @swagger
+ * /reservations/generateBillEvent/{eid}:
+ *   get:
+ *     summary: Generar factura de una reservación de evento
+ *     tags: [EventReservation]
+ *     parameters:
+ *       - in: path
+ *         name: eid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la reservación de evento
+ *     responses:
+ *       200:
+ *         description: PDF de la factura generado correctamente
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Reservación no encontrada
+ *       500:
+ *         description: Error interno al generar la factura
+ */
+router.get(
+  "/generateBillEvent/:eid",
+  generateEventBillValidator,
+  generateEventReservation
+);
 
 export default router; 
