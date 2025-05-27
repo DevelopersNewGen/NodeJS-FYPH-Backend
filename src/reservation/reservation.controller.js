@@ -6,10 +6,12 @@ import User from "../user/user.model.js"
 export const createReservation = async (req, res) => {
     try {
         const { rid } = req.params; 
-        const {usuario} = req;
-        const { startDate, extiDate, ...otherData } = req.body;
+        const { usuario } = req;
+        const { startDate, exitDate, ...otherData } = req.body;
+
         const room = await Room.findById(rid);
-        const user = await User.findById(usuario._id)
+        const user = await User.findById(usuario._id);
+
         if (!room) {
             return res.status(404).json({
                 success: false,
@@ -17,18 +19,43 @@ export const createReservation = async (req, res) => {
             });
         }
 
+        if (new Date(startDate) >= new Date(exitDate)) {
+            return res.status(400).json({
+                success: false,
+                message: "La fecha de entrada debe ser menor que la fecha de salida"
+            });
+        }
+
+        const overlappingReservation = await Reservation.findOne({
+            room: room._id,
+            $and: [
+                { startDate: { $lt: new Date(exitDate) } },
+                { exitDate: { $gt: new Date(startDate) } }
+            ]
+        });
+
+        if (overlappingReservation) {
+            return res.status(400).json({
+                success: false,
+                message: "Ya existe una reservación para esas fechas en esta habitación"
+            });
+        }
+
         const reservationData = {
             startDate,
-            extiDate,
+            exitDate,
             user: usuario._id,
             room: room._id,
             ...otherData
         };
+
         const reservation = await Reservation.create(reservationData);
 
-        room.reservations.push(reservation.rid);
-        user.reservations.push(reservation.rid)
+        room.reservations.push(reservation._id);
         await room.save();
+
+        user.reservations.push(reservation._id);
+        await user.save();
 
         if (room.hotel) {
             await Hotel.findByIdAndUpdate(
@@ -42,6 +69,7 @@ export const createReservation = async (req, res) => {
             message: "Reservación creada exitosamente",
             reservation
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -50,6 +78,8 @@ export const createReservation = async (req, res) => {
         });
     }
 };
+
+
 
 export const getReservationById = async (req, res) => {
     try {

@@ -16,6 +16,7 @@ import eventRoutes from "../src/event/event.routes.js";
 import createDefaultAdmin from "./default-data.js";
 import billRoutes from "../src/bill/bill.routes.js"
 import reportRoutes from "../src/report/report.routes.js";
+import startReservationStatusJob  from "./reservationStatus.js"
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false }));
@@ -48,6 +49,7 @@ const conectarDB = async () => {
     try {
         await dbConnection();
         await createDefaultAdmin();
+        await startReservationStatusJob();
     } catch (err) {
         console.log(`Database connection failed: ${err}`);
         process.exit(1);
