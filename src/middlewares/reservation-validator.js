@@ -88,3 +88,10 @@ export const deleteEventReservationValidator = [
   validateField,
   handleErrors,
 ];
+
+export const getReservationByHostValidator =[
+    validateJWT,
+    hasRoles("HOST_ROLE"),
+    validateField,
+    handleErrors
+]

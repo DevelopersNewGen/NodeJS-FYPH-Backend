@@ -191,3 +191,57 @@ export const getReservationsByRoom = async (req, res) => {
         });
     }
 };
+
+export const getReservationsByHost = async (req, res) => {
+  try {
+    const { usuario } = req;            
+    const hostId = usuario._id;
+
+    const hotel = await Hotel.findOne({ host: hostId })
+      .populate({
+        path: 'reservations',
+        match: { status: true },                        
+        select: 'startDate exitDate status user room',  
+        populate: [
+          { path: 'user', select: 'name email role' },  
+          { path: 'room', select: 'numRoom' }           
+        ]
+      });
+
+    if (!hotel) {
+      return res.status(404).json({
+        success: false,
+        msg: 'Hotel no encontrado'
+      });
+    }
+
+    const reservations = hotel.reservations.map(r => ({
+      rid:       r._id,
+      startDate: r.startDate,
+      exitDate:  r.exitDate,
+      status:    r.status,
+      user: {
+        id:    r.user._id,
+        name:  r.user.name,
+        email: r.user.email,
+        role:  r.user.role
+      },
+      room: {
+        id:     r.room._id,
+        number: r.room.numRoom
+      }
+    }));
+
+    return res.status(200).json({
+      success: true,
+      reservations
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      msg: 'Error al obtener las reservaciones',
+      error: error.message
+    });
+  }
+};

@@ -3,7 +3,8 @@ import {
     createReservation,
     getReservationById,
     deleteReservation,
-    getReservationsByRoom
+    getReservationsByRoom,
+    getReservationsByHost
 } from "./reservation.controller.js";
 import {
   createEventReservation,
@@ -19,7 +20,8 @@ import {
     deleteEventReservationValidator,
     getUserReservedEventsValidator,
     getEventReservationByIdValidator,
-  updateEventReservationValidator
+  updateEventReservationValidator,
+  getReservationByHostValidator
  } from "../middlewares/reservation-validator.js";
 
 const router = Router();
@@ -252,5 +254,21 @@ router.put(
   "/updateEventReservation/:rid",
   updateEventReservationValidator,
   updateEventReservation
+);
+
+/**
+ * @swagger
+ * /reservations/host:
+ *   get:
+ *     summary: Obtener todas las reservaciones del host autenticado
+ *     tags: [Reservations]
+ *     responses:
+ *       200:
+ *         description: Lista de reservaciones del host
+ */
+router.get(
+  "/reservationsByHost",
+  getReservationByHostValidator,
+  getReservationsByHost
 );
 export default router;
